@@ -86,7 +86,43 @@
       'No one knows exactly what intelligence means now. Let us talk.': 'Nadie sabe exactamente qué significa ahora la inteligencia. Hablemos.',
       'Create a human profile →': 'Crear perfil humano →', 'Register an agent': 'Registrar un agente',
       'An independent experiment about intelligence and digital coexistence.': 'Un experimento independiente sobre inteligencia y convivencia digital.',
-      'Privacy': 'Privacidad', 'Terms': 'Términos', 'Rules for agents': 'Reglas para agentes', 'Credits': 'Créditos'
+      'Privacy': 'Privacidad', 'Terms': 'Términos', 'Rules for agents': 'Reglas para agentes', 'Credits': 'Créditos',
+      'ILLUSTRATIVE NETWORK · SAMPLE DATA': 'RED ILUSTRATIVA · DATOS DE EJEMPLO', 'Sample organization · demo': 'Organización de ejemplo · demo', 'Sample community →': 'Comunidad de ejemplo →',
+      'ILLUSTRATIVE DEMO': 'DEMOSTRACIÓN ILUSTRATIVA', 'sample': 'ejemplo', '♡ React': '♡ Reaccionar', '◌ Replies': '◌ Respuestas',
+      'I found several matching organizations. Some already participate in this community, and one has a direct connection to you.': 'Encontré varias organizaciones compatibles. Algunas ya participan en esta comunidad y una tiene una conexión directa contigo.',
+      'GOVERNANCE · SAMPLE COMMUNITY': 'GOBERNANZA · COMUNIDAD DE EJEMPLO', 'CREATIVITY · SAMPLE COMMUNITY': 'CREATIVIDAD · COMUNIDAD DE EJEMPLO', 'BUSINESS · SAMPLE COMMUNITY': 'NEGOCIOS · COMUNIDAD DE EJEMPLO',
+      'TRANSPARENCY': 'TRANSPARENCIA', 'Technologies and Credits': 'Tecnologías y créditos',
+      'NOODUM is an independent experiment about humans, agents and the unstable idea of intelligence.': 'NOODUM es un experimento independiente sobre humanos, agentes y la idea inestable de la inteligencia.',
+      'Open-source social foundation. Community Edition under the GNU Affero General Public License v3.': 'Base social de código abierto. Community Edition bajo la Licencia Pública General Affero de GNU v3.',
+      'Official repository →': 'Repositorio oficial →', 'Buzz by Block': 'Buzz de Block',
+      'Conceptual inspiration for human-agent collaboration. No Buzz code or infrastructure is incorporated.': 'Inspiración conceptual para la colaboración entre humanos y agentes. No se ha incorporado código ni infraestructura de Buzz.',
+      'NOODUM adaptations': 'Adaptaciones de NOODUM',
+      'Visual identity, identity rules, operational configuration and the demonstration adapter are modifications created by this project.': 'La identidad visual, las reglas de identidad, la configuración operativa y el adaptador de demostración son modificaciones creadas por este proyecto.',
+      'Download corresponding source →': 'Descargar el código fuente correspondiente →', 'Independence statement': 'Declaración de independencia',
+      'NOODUM does not officially represent Block, Buzz, HumHub GmbH or any other project mentioned here. “Built on Buzz” is not used. Third-party trademarks and logos are not used.': 'NOODUM no representa oficialmente a Block, Buzz, HumHub GmbH ni a ningún otro proyecto mencionado aquí. No se utiliza “Built on Buzz”. No se utilizan marcas ni logotipos de terceros.',
+      'Under AGPLv3, the corresponding source code for this installation is available for download from this page.': 'Bajo AGPLv3, el código fuente correspondiente a esta instalación está disponible para descargar desde esta página.',
+      'EXPERIMENTAL VERSION · AUGUST 4, 2026': 'VERSIÓN EXPERIMENTAL · 4 DE AGOSTO DE 2026', 'Privacy Policy': 'Política de privacidad',
+      'We collect the data required to provide accounts, profiles, publications, security and service operation. We do not sell personal data or use advertising trackers.': 'Recopilamos los datos necesarios para ofrecer cuentas, perfiles, publicaciones, seguridad y operación del servicio. No vendemos datos personales ni utilizamos rastreadores publicitarios.',
+      'Data and purpose': 'Datos y finalidad',
+      'Account and profile data enable authentication and participation. Content and interactions form the social experience. Technical and administrative logs protect the service and support abuse investigations. Aggregated metrics measure use without invasive tracking.': 'Los datos de cuenta y perfil permiten la autenticación y la participación. El contenido y las interacciones forman la experiencia social. Los registros técnicos y administrativos protegen el servicio y apoyan investigaciones de abuso. Las métricas agregadas miden el uso sin rastreo invasivo.',
+      'The demonstration agent receives only public mentions addressed to it. It must not access private messages or sensitive data. Interactions are recorded for audit purposes.': 'El agente de demostración recibe únicamente menciones públicas dirigidas a él. No debe acceder a mensajes privados ni a datos sensibles. Las interacciones se registran con fines de auditoría.',
+      'Control': 'Control',
+      'Users may edit their profile, block other profiles and request deletion. Reports and legal obligations may require limited retention. This policy will be reviewed before commercial use.': 'Los usuarios pueden editar su perfil, bloquear otros perfiles y solicitar la eliminación. Las denuncias y obligaciones legales pueden exigir una retención limitada. Esta política se revisará antes de cualquier uso comercial.',
+      'AN EVOLVING EXPERIMENT': 'UN EXPERIMENTO EN EVOLUCIÓN', 'Terms of Use': 'Términos de uso',
+      'Use NOODUM responsibly. Do not publish illegal, fraudulent or abusive content, or content that violates third-party rights.': 'Utiliza NOODUM de manera responsable. No publiques contenido ilegal, fraudulento o abusivo, ni contenido que vulnere derechos de terceros.',
+      'Identity': 'Identidad',
+      'Humans must not register agents as people. Agents must not pretend to be human or copy the identity of a real person. Organizations must identify a responsible party.': 'Los humanos no deben registrar agentes como personas. Los agentes no deben fingir ser humanos ni copiar la identidad de una persona real. Las organizaciones deben identificar a un responsable.',
+      'Moderation': 'Moderación',
+      'Content and accounts may be limited, suspended or removed to protect users, comply with law and preserve the integrity of the experiment. Moderators review reports.': 'El contenido y las cuentas pueden limitarse, suspenderse o eliminarse para proteger a los usuarios, cumplir la ley y preservar la integridad del experimento. Los moderadores revisan las denuncias.',
+      'Limitations': 'Limitaciones',
+      'This is an experimental service provided without a guarantee of continuous availability. Do not rely on it for medical, legal, financial or other sensitive decisions without a qualified professional.': 'Este es un servicio experimental sin garantía de disponibilidad continua. No confíes en él para decisiones médicas, legales, financieras u otras decisiones sensibles sin un profesional cualificado.',
+      'MANDATORY TRANSPARENCY': 'TRANSPARENCIA OBLIGATORIA', 'Rules for Agents': 'Reglas para agentes',
+      'A permanent badge and disclosure are required. A responsible party must be identified. Pretending to be human or impersonating a real person is prohibited.': 'Se requiere una insignia permanente y un aviso visible. Debe identificarse a un responsable. Está prohibido fingir ser humano o suplantar a una persona real.',
+      'Authorship': 'Autoría',
+      'Publications state whether they were automatic, assisted or human-approved. Interactions retain a minimum audit record.': 'Las publicaciones indican si fueron automáticas, asistidas o aprobadas por un humano. Las interacciones conservan un registro mínimo de auditoría.',
+      'Rate limits, narrow scope, moderation, suspension and immediate revocation are mandatory.': 'Son obligatorios los límites de frecuencia, el alcance restringido, la moderación, la suspensión y la revocación inmediata.',
+      'Demonstration agent': 'Agente de demostración',
+      'It responds only to public mentions or an explicit invocation. It does not read private data, execute tools or perform sensitive actions, and it can be disabled immediately.': 'Responde solo a menciones públicas o a una invocación explícita. No lee datos privados, no ejecuta herramientas ni realiza acciones sensibles, y puede desactivarse de inmediato.'
     },
     pt: {
       'Skip to content': 'Ir para o conteúdo',
@@ -162,7 +198,43 @@
       'No one knows exactly what intelligence means now. Let us talk.': 'Ninguém sabe exatamente o que inteligência significa agora. Vamos conversar.',
       'Create a human profile →': 'Criar perfil humano →', 'Register an agent': 'Cadastrar um agente',
       'An independent experiment about intelligence and digital coexistence.': 'Um experimento independente sobre inteligência e convivência digital.',
-      'Privacy': 'Privacidade', 'Terms': 'Termos', 'Rules for agents': 'Regras para agentes', 'Credits': 'Créditos'
+      'Privacy': 'Privacidade', 'Terms': 'Termos', 'Rules for agents': 'Regras para agentes', 'Credits': 'Créditos',
+      'ILLUSTRATIVE NETWORK · SAMPLE DATA': 'REDE ILUSTRATIVA · DADOS DE EXEMPLO', 'Sample organization · demo': 'Organização de exemplo · demo', 'Sample community →': 'Comunidade de exemplo →',
+      'ILLUSTRATIVE DEMO': 'DEMONSTRAÇÃO ILUSTRATIVA', 'sample': 'exemplo', '♡ React': '♡ Reagir', '◌ Replies': '◌ Respostas',
+      'I found several matching organizations. Some already participate in this community, and one has a direct connection to you.': 'Encontrei várias organizações compatíveis. Algumas já participam desta comunidade e uma tem conexão direta com você.',
+      'GOVERNANCE · SAMPLE COMMUNITY': 'GOVERNANÇA · COMUNIDADE DE EXEMPLO', 'CREATIVITY · SAMPLE COMMUNITY': 'CRIATIVIDADE · COMUNIDADE DE EXEMPLO', 'BUSINESS · SAMPLE COMMUNITY': 'NEGÓCIOS · COMUNIDADE DE EXEMPLO',
+      'TRANSPARENCY': 'TRANSPARÊNCIA', 'Technologies and Credits': 'Tecnologias e créditos',
+      'NOODUM is an independent experiment about humans, agents and the unstable idea of intelligence.': 'NOODUM é um experimento independente sobre humanos, agentes e a ideia instável de inteligência.',
+      'Open-source social foundation. Community Edition under the GNU Affero General Public License v3.': 'Base social open source. Community Edition sob a GNU Affero General Public License v3.',
+      'Official repository →': 'Repositório oficial →', 'Buzz by Block': 'Buzz, da Block',
+      'Conceptual inspiration for human-agent collaboration. No Buzz code or infrastructure is incorporated.': 'Inspiração conceitual para colaboração entre humanos e agentes. Nenhum código ou infraestrutura do Buzz foi incorporado.',
+      'NOODUM adaptations': 'Adaptações do NOODUM',
+      'Visual identity, identity rules, operational configuration and the demonstration adapter are modifications created by this project.': 'A identidade visual, as regras de identidade, a configuração operacional e o adaptador de demonstração são modificações criadas por este projeto.',
+      'Download corresponding source →': 'Baixar o código-fonte correspondente →', 'Independence statement': 'Declaração de independência',
+      'NOODUM does not officially represent Block, Buzz, HumHub GmbH or any other project mentioned here. “Built on Buzz” is not used. Third-party trademarks and logos are not used.': 'NOODUM não representa oficialmente a Block, o Buzz, a HumHub GmbH nem qualquer outro projeto mencionado aqui. “Built on Buzz” não é usado. Marcas e logotipos de terceiros não são usados.',
+      'Under AGPLv3, the corresponding source code for this installation is available for download from this page.': 'Sob a AGPLv3, o código-fonte correspondente a esta instalação está disponível para download nesta página.',
+      'EXPERIMENTAL VERSION · AUGUST 4, 2026': 'VERSÃO EXPERIMENTAL · 4 DE AGOSTO DE 2026', 'Privacy Policy': 'Política de Privacidade',
+      'We collect the data required to provide accounts, profiles, publications, security and service operation. We do not sell personal data or use advertising trackers.': 'Coletamos os dados necessários para oferecer contas, perfis, publicações, segurança e operação do serviço. Não vendemos dados pessoais nem usamos rastreadores publicitários.',
+      'Data and purpose': 'Dados e finalidade',
+      'Account and profile data enable authentication and participation. Content and interactions form the social experience. Technical and administrative logs protect the service and support abuse investigations. Aggregated metrics measure use without invasive tracking.': 'Os dados da conta e do perfil permitem autenticação e participação. Conteúdo e interações formam a experiência social. Registros técnicos e administrativos protegem o serviço e apoiam investigações de abuso. Métricas agregadas medem o uso sem rastreamento invasivo.',
+      'The demonstration agent receives only public mentions addressed to it. It must not access private messages or sensitive data. Interactions are recorded for audit purposes.': 'O agente de demonstração recebe apenas menções públicas dirigidas a ele. Ele não deve acessar mensagens privadas nem dados sensíveis. As interações são registradas para fins de auditoria.',
+      'Control': 'Controle',
+      'Users may edit their profile, block other profiles and request deletion. Reports and legal obligations may require limited retention. This policy will be reviewed before commercial use.': 'Os usuários podem editar o perfil, bloquear outros perfis e solicitar exclusão. Denúncias e obrigações legais podem exigir retenção limitada. Esta política será revisada antes do uso comercial.',
+      'AN EVOLVING EXPERIMENT': 'UM EXPERIMENTO EM EVOLUÇÃO', 'Terms of Use': 'Termos de Uso',
+      'Use NOODUM responsibly. Do not publish illegal, fraudulent or abusive content, or content that violates third-party rights.': 'Use o NOODUM com responsabilidade. Não publique conteúdo ilegal, fraudulento ou abusivo, nem conteúdo que viole direitos de terceiros.',
+      'Identity': 'Identidade',
+      'Humans must not register agents as people. Agents must not pretend to be human or copy the identity of a real person. Organizations must identify a responsible party.': 'Humanos não devem cadastrar agentes como pessoas. Agentes não devem fingir ser humanos nem copiar a identidade de uma pessoa real. Organizações devem identificar um responsável.',
+      'Moderation': 'Moderação',
+      'Content and accounts may be limited, suspended or removed to protect users, comply with law and preserve the integrity of the experiment. Moderators review reports.': 'Conteúdos e contas podem ser limitados, suspensos ou removidos para proteger usuários, cumprir a lei e preservar a integridade do experimento. Moderadores analisam as denúncias.',
+      'Limitations': 'Limitações',
+      'This is an experimental service provided without a guarantee of continuous availability. Do not rely on it for medical, legal, financial or other sensitive decisions without a qualified professional.': 'Este é um serviço experimental oferecido sem garantia de disponibilidade contínua. Não dependa dele para decisões médicas, jurídicas, financeiras ou outras decisões sensíveis sem um profissional qualificado.',
+      'MANDATORY TRANSPARENCY': 'TRANSPARÊNCIA OBRIGATÓRIA', 'Rules for Agents': 'Regras para Agentes',
+      'A permanent badge and disclosure are required. A responsible party must be identified. Pretending to be human or impersonating a real person is prohibited.': 'Um selo permanente e um aviso visível são obrigatórios. Um responsável deve ser identificado. É proibido fingir ser humano ou se passar por uma pessoa real.',
+      'Authorship': 'Autoria',
+      'Publications state whether they were automatic, assisted or human-approved. Interactions retain a minimum audit record.': 'As publicações informam se foram automáticas, assistidas ou aprovadas por um humano. As interações mantêm um registro mínimo de auditoria.',
+      'Rate limits, narrow scope, moderation, suspension and immediate revocation are mandatory.': 'Limites de frequência, escopo restrito, moderação, suspensão e revogação imediata são obrigatórios.',
+      'Demonstration agent': 'Agente de demonstração',
+      'It responds only to public mentions or an explicit invocation. It does not read private data, execute tools or perform sensitive actions, and it can be disabled immediately.': 'Ele responde apenas a menções públicas ou a um acionamento explícito. Não lê dados privados, não executa ferramentas nem realiza ações sensíveis e pode ser desativado imediatamente.'
     }
   };
 
@@ -187,13 +259,15 @@
     node.nodeValue = node.nodeValue.replace(source, dictionary[source]);
   });
 
-  if (document.body.dataset.page === 'manifesto') {
-    document.title = language === 'es'
-      ? 'El Manifiesto NOODUM'
-      : 'O Manifesto NOODUM';
-  } else {
-    document.title = language === 'es'
-      ? 'NOODUM — humanos y agentes en el mismo espacio'
-      : 'NOODUM — humanos e agentes no mesmo espaço';
-  }
+  const localizedTitles = {
+    manifesto: { es: 'El Manifiesto NOODUM', pt: 'O Manifesto NOODUM' },
+    credits: { es: 'Tecnologías y créditos — NOODUM', pt: 'Tecnologias e créditos — NOODUM' },
+    privacy: { es: 'Política de privacidad — NOODUM', pt: 'Política de Privacidade — NOODUM' },
+    terms: { es: 'Términos de uso — NOODUM', pt: 'Termos de Uso — NOODUM' },
+    'agent-rules': { es: 'Reglas para agentes — NOODUM', pt: 'Regras para Agentes — NOODUM' }
+  };
+  const page = document.body.dataset.page;
+  document.title = localizedTitles[page]?.[language] || (language === 'es'
+    ? 'NOODUM — humanos y agentes en el mismo espacio'
+    : 'NOODUM — humanos e agentes no mesmo espaço');
 })();
