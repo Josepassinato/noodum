@@ -8,6 +8,7 @@ use humhub\modules\aiops\models\Enforcement;
 use humhub\modules\aiops\services\llm\LlmAdapter;
 use humhub\modules\aiops\services\llm\NullAdapter;
 use humhub\modules\aiops\services\llm\OpenAiCompatibleAdapter;
+use humhub\modules\aiops\services\llm\CouncilAdapter;
 use humhub\modules\aiops\Module;
 use humhub\modules\user\models\User;
 use Throwable;
@@ -47,9 +48,16 @@ final class OperationsManager
      */
     public static function resolveAdapter(): LlmAdapter
     {
+        $council = CouncilAdapter::fromEnvironment();
+        if ($council->configuredCount() > 0) {
+            return $council;
+        }
+
+        // Backward-compatible single-provider configuration. New
+        // installations should use the three provider-specific prefixes.
         $provider = strtolower((string)getenv('AIOPS_LLM_PROVIDER'));
         if ($provider === '' || $provider === 'none' || $provider === 'null') {
-            return new NullAdapter();
+            return $council;
         }
 
         $adapter = new OpenAiCompatibleAdapter();
@@ -81,6 +89,7 @@ final class OperationsManager
             'reports' => fn() => $this->triageReports($trigger),
             'spam' => fn() => $this->scanRecentPosts($trigger),
             'agent_compliance' => fn() => $this->checkAgentCompliance($trigger),
+            'council_planning' => fn() => $this->runCouncilPlanning($trigger),
         ] as $step => $fn) {
             try {
                 $result[$step] = $fn();
@@ -203,6 +212,19 @@ final class OperationsManager
                 $signals['reasons'][] = "high volume ({$volume} publications in 1h)";
             }
 
+            $council = $this->reviewSuspiciousContent(
+                (int)$row['content_id'],
+                $message,
+                $trigger
+            );
+            if (($council['label'] ?? null) === 'spam') {
+                $score = min($score + 0.2, 1.0);
+                $signals['reasons'][] = 'provider council reached quorum: spam';
+            } elseif (($council['label'] ?? null) === 'malicious') {
+                $score = min($score + 0.4, 1.0);
+                $signals['reasons'][] = 'provider council reached quorum: malicious';
+            }
+
             $evidence = [
                 'content_id' => (int)$row['content_id'],
                 'signals' => $signals['reasons'],
@@ -210,6 +232,7 @@ final class OperationsManager
                 'duplicates' => $duplicates['count'],
                 'volume_1h' => $volume,
                 'injection_pattern' => Sanitizer::looksLikeInjection($message),
+                'council' => $council,
             ];
 
             $this->executor->observe('flag_spam', $trigger, 'content', (int)$row['content_id'], $evidence, $score);
@@ -255,6 +278,106 @@ final class OperationsManager
         }
 
         return ['scanned' => count($rows), 'flagged' => $flagged, 'contained' => $contained];
+    }
+
+    /**
+     * Ask the independent providers to review only content that deterministic
+     * rules already marked as suspicious. Results are closed labels and need a
+     * two-provider quorum. Each content item is attempted at most once per day.
+     */
+    private function reviewSuspiciousContent(int $contentId, string $message, string $trigger): array
+    {
+        if (!$this->module->isCapabilityEnabled('council_content_review') || !$this->llm->isAvailable()) {
+            return ['status' => 'unavailable'];
+        }
+
+        $since = gmdate('Y-m-d H:i:s', time() - 86400);
+        $alreadyReviewed = AuditEntry::find()
+            ->where([
+                'capability' => 'council_content_review',
+                'subject_type' => 'content',
+                'subject_id' => $contentId,
+            ])
+            ->andWhere(['>=', 'created_at', $since])
+            ->exists();
+        if ($alreadyReviewed) {
+            return ['status' => 'already_reviewed'];
+        }
+
+        $vote = $this->llm->classify(
+            Sanitizer::envelope($message),
+            ['benign', 'spam', 'malicious'],
+            'Classify potentially abusive social-network content. Malicious means content that '
+            . 'appears to facilitate illegal abuse, targeted harm, credential theft or malware. '
+            . 'Do not infer protected traits and do not treat disagreement as malicious.'
+        );
+
+        $evidence = $vote ?? ['status' => 'no_quorum'];
+        $this->executor->observe(
+            'council_content_review',
+            $trigger,
+            'content',
+            $contentId,
+            $evidence,
+            isset($vote['confidence']) ? (float)$vote['confidence'] : null
+        );
+
+        return $evidence;
+    }
+
+    /**
+     * Prepare one daily, internal council brief. External publication remains
+     * a level-2 proposal: approval records intent but a human still performs
+     * the concrete action in the destination's native interface.
+     */
+    private function runCouncilPlanning(string $trigger): array
+    {
+        if (!$this->module->isCapabilityEnabled('draft_growth_campaign') || !$this->llm->isAvailable()) {
+            return ['skipped' => 'provider council unavailable'];
+        }
+
+        $since = gmdate('Y-m-d H:i:s', time() - 82800); // 23 hours
+        $alreadyPrepared = AuditEntry::find()
+            ->where(['capability' => 'draft_growth_campaign', 'action' => 'observe'])
+            ->andWhere(['>=', 'created_at', $since])
+            ->exists();
+        if ($alreadyPrepared) {
+            return ['skipped' => 'daily brief already prepared'];
+        }
+
+        $facts = $this->healthSnapshot();
+        $brief = $this->llm->summarize(
+            json_encode($facts, JSON_UNESCAPED_UNICODE),
+            'Prepare a concise daily brief for NOODUM, an open-source social network for humans '
+            . 'and AI agents. Recommend one community-growth experiment, one curation priority '
+            . 'and one technical observation. Use only supplied facts. Do not claim metrics that '
+            . 'are absent. Do not publish anything and do not request credentials.'
+        );
+        if ($brief === null) {
+            return ['skipped' => 'council did not reach operational quorum'];
+        }
+
+        $this->executor->observe(
+            'draft_growth_campaign',
+            $trigger,
+            'network',
+            0,
+            ['brief' => $brief, 'facts' => $facts]
+        );
+
+        $proposal = $this->executor->propose(
+            'publish_external_community',
+            'network',
+            0,
+            'The provider council prepared the daily growth and community brief.',
+            'Review and publish an approved NOODUM update in an allowlisted community',
+            'External publication has reputational impact and remains human-approved.',
+            ['brief' => $brief, 'destinations' => ['allowlisted_only']],
+            $trigger,
+            0.8
+        );
+
+        return ['brief_prepared' => true, 'proposal_id' => $proposal?->id];
     }
 
     /**
@@ -337,7 +460,7 @@ final class OperationsManager
 
         $dayAgo = gmdate('Y-m-d H:i:s', time() - 86400);
 
-        return [
+        $snapshot = [
             'users_total' => $count('SELECT COUNT(*) FROM user WHERE status = 1'),
             'content_24h' => $count('SELECT COUNT(*) FROM content WHERE created_at >= :s', [':s' => $dayAgo]),
             'spaces_total' => $count('SELECT COUNT(*) FROM space'),
@@ -347,5 +470,13 @@ final class OperationsManager
             'llm' => $this->llm->describe(),
             'llm_available' => $this->llm->isAvailable(),
         ];
+
+        if ($this->llm instanceof CouncilAdapter) {
+            $snapshot['council_members'] = $this->llm->memberStatus();
+            $snapshot['council_configured'] = $this->llm->configuredCount();
+            $snapshot['council_target'] = 3;
+        }
+
+        return $snapshot;
     }
 }

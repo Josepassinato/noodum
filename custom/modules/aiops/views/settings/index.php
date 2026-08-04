@@ -77,16 +77,16 @@ use yii\helpers\Html;
             <textarea class="form-control" name="denylist" rows="3"><?= Html::encode(implode("\n", $module->getDenylist())) ?></textarea>
         </div>
 
-        <h4>Model provider</h4>
+        <h4>Three-provider council</h4>
         <div class="alert alert-info">
             Current: <strong><?= Html::encode($llm) ?></strong>
             <?php if (!$llmAvailable): ?>
-                <br>No provider is configured — the layer operates with deterministic rules only.
+                <br>The council does not have operational quorum — the layer operates with deterministic rules only.
                 Moderation remains fully functional.
             <?php endif; ?>
-            <br><small>Configured through the environment, never through this screen:
-            <code>AIOPS_LLM_PROVIDER</code>, <code>AIOPS_LLM_API_KEY</code>,
-            <code>AIOPS_LLM_BASE_URL</code>, <code>AIOPS_LLM_MODEL</code>.
+            <br><small>Configured through the environment, never through this screen. Each member uses
+            its own <code>AIOPS_OPENAI_*</code>, <code>AIOPS_XAI_*</code> or
+            <code>AIOPS_GEMINI_*</code> variables. Two distinct providers must agree.
             Secrets are never stored in the database or rendered on a page.</small>
         </div>
 

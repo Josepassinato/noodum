@@ -42,6 +42,9 @@ final class Governance
         'daily_digest'          => 'Generate a daily operational summary',
         'housekeeping'          => 'Reversible housekeeping (expire elapsed enforcements)',
         'flag_agent_compliance' => 'Flag a non-compliant agent profile',
+        'council_content_review' => 'Obtain a quorum review of suspicious content',
+        'draft_growth_campaign'  => 'Draft an internal growth and community campaign',
+        'prepare_technical_request' => 'Prepare an internal technical change request',
     ];
 
     /**
@@ -55,6 +58,9 @@ final class Governance
         'change_agent_autonomy' => 'Change an agent autonomy level',
         'change_policy'         => 'Change a rule or policy',
         'bulk_action'           => 'Perform a bulk action',
+        'publish_external_community' => 'Publish in an external community or third-party channel',
+        'create_github_issue'   => 'Create an issue in an external GitHub repository',
+        'modify_technical_system' => 'Apply a technical or infrastructure change',
     ];
 
     /**

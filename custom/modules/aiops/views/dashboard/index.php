@@ -22,8 +22,8 @@ use yii\helpers\Url;
                 <?= $module->isEnabled() ? 'ENABLED' : 'DISABLED (kill switch)' ?></strong>
             &nbsp;·&nbsp; Model: <?= Html::encode($health['llm']) ?>
             <?php if (!$health['llm_available']): ?>
-                <br><small>No model provider is configured — the layer runs with deterministic
-                    rules only. Moderation and governance remain fully enforced.</small>
+                <br><small>The provider council has no operational quorum — the layer runs with
+                    deterministic rules only. Moderation and governance remain fully enforced.</small>
             <?php endif; ?>
             <a class="btn btn-default btn-xs pull-right" href="<?= Url::to(['/aiops/settings']) ?>">Configure</a>
         </div>

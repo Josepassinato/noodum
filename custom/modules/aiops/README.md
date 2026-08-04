@@ -33,10 +33,13 @@ HumHub cron ┘         │
                                    └─► AuditEntry   always, before action
 ```
 
-The LLM is used only by `classify()` and `summarize()`, behind the
-`LlmAdapter` interface. Without a configured key, the module uses
-`NullAdapter` and operates entirely deterministically. No moderation function
-depends on the model.
+Model access stays behind the `LlmAdapter` interface. `CouncilAdapter` composes
+three independently credentialed providers: OpenAI for product and technical
+operations, xAI Grok for growth and adversarial counterpoint, and Google Gemini
+for safety and community impact. A model classification becomes usable only
+when at least two distinct providers agree on one caller-supplied closed label.
+Without quorum, `NullAdapter` behavior applies and deterministic moderation
+continues unchanged.
 
 ### Why approval does not execute an action automatically
 
@@ -76,17 +79,54 @@ Interface: **Administration › AI Operations** (`/aiops/dashboard`). Settings
 are at `/aiops/settings`, the queue at `/aiops/approval`, and the complete audit
 trail at `/aiops/dashboard/audit`.
 
-## Provider configuration
+## Provider council configuration
 
 Environment only. Secrets are never stored in the database or rendered on a
 page.
 
-| Variable | Effect |
-|---|---|
-| `AIOPS_LLM_PROVIDER` | empty/`none` = deterministic; `openai` = compatible endpoint |
-| `AIOPS_LLM_API_KEY` | key; without it the adapter reports itself unavailable |
-| `AIOPS_LLM_BASE_URL` | default `https://api.openai.com/v1` |
-| `AIOPS_LLM_MODEL` | default `gpt-4o-mini` |
+Each member requires both its API key and an explicit model name. Model names
+are not guessed because provider catalogs change. Base URLs default to the
+providers' OpenAI-compatible endpoints.
+
+| Member | Required variables | Default base URL |
+|---|---|---|
+| OpenAI | `AIOPS_OPENAI_API_KEY`, `AIOPS_OPENAI_MODEL` | `https://api.openai.com/v1` |
+| xAI Grok | `AIOPS_XAI_API_KEY`, `AIOPS_XAI_MODEL` | `https://api.x.ai/v1` |
+| Google Gemini | `AIOPS_GEMINI_API_KEY`, `AIOPS_GEMINI_MODEL` | `https://generativelanguage.googleapis.com/v1beta/openai` |
+
+Optional `*_BASE_URL` variables override those defaults. The older single
+`AIOPS_LLM_*` configuration remains available only for backward compatibility
+and does not count as a three-member council.
+
+Official provider contracts: [OpenAI Chat Completions](https://platform.openai.com/docs/api-reference/chat),
+[xAI inference API](https://docs.x.ai/developers/rest-api-reference/inference/chat),
+and [Gemini OpenAI compatibility](https://ai.google.dev/gemini-api/docs/openai).
+
+## Marketing, curation and technical requests
+
+- Suspicious text already identified by deterministic rules may receive a
+  closed-label council review. It is attempted at most once per content item
+  per day.
+- The council may prepare one internal growth, curation and technical brief per
+  day. This is an audited, reversible drafting action.
+- Publishing in third-party communities, creating an external GitHub issue or
+  changing code/infrastructure is level 2: the council creates an expiring
+  proposal and a human decides. Approval does not execute the external action.
+- Permanent deletion, ownership, privacy terms, data sale, credentials and
+  financial actions remain level 3 with no AI execution path.
+
+There is no external publishing connector in this release. The module must not
+claim autonomous GitHub, Reddit, X, Instagram or Facebook posting until a
+destination-specific connector, credential scope, rate limit and revocation
+test are implemented.
+
+## Relationship with Buzz
+
+This module incorporates no Buzz code or infrastructure. It is conceptually
+inspired by Buzz's public architecture: agents have distinct identities,
+authority is scoped to those identities, and actions share an auditable trail.
+NOODUM's three-provider council and governance levels are NOODUM-specific and
+must not be presented as an official Buzz methodology.
 
 ## Conservative defaults
 

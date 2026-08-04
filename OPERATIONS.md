@@ -15,6 +15,10 @@ docker compose logs --tail=200 app demo-agent
 docker compose restart app cron demo-agent
 ```
 
+The agent kill switch is `AGENT_ENABLED=false` in the protected `.env`, followed
+by `docker compose up -d --force-recreate demo-agent`. Suspension of the
+`demo_agent` account is a second independent revocation mechanism.
+
 ## Transactional e-mail check
 
 Resend credentials live only in `.env` as `SMTP_DSN`. Verify the configured
@@ -29,9 +33,28 @@ Then confirm delivery in the destination mailbox. A successful CLI exit proves
 provider acceptance, not inbox placement; inspect the Resend delivery table as
 well.
 
-The agent kill switch is `AGENT_ENABLED=false` in the protected `.env`, followed
-by `docker compose up -d --force-recreate demo-agent`. Suspension of the
-`demo_agent` account is a second independent revocation mechanism.
+## Three-provider AI council
+
+The operations council has three independent identities and credentials:
+
+- OpenAI: product and technical operations;
+- xAI Grok: growth strategy and adversarial counterpoint;
+- Google Gemini: safety, curation and community impact.
+
+Every model-based classification is restricted to a closed label set and needs
+agreement from at least two distinct providers. The global kill switch is the
+AI Operations module setting or `php protected/yii aiops/kill-switch off`.
+Provider credentials are environment-only and must never be committed.
+
+The council may autonomously observe, draft, flag and apply temporary,
+reversible containment to automated accounts when separately enabled. External
+community publication, GitHub issue creation, permanent moderation and any
+technical change remain approval-gated. The current release does not contain
+an external publishing connector.
+
+Buzz relationship: conceptual and architectural inspiration only. NOODUM uses
+Buzz's public principles of distinct agent identity, scoped authority and an
+auditable action trail; it does not incorporate Buzz code or infrastructure.
 
 ## Backup and restore
 

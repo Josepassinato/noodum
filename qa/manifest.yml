@@ -114,6 +114,15 @@ integrations:
     permissions: [read_public_mentions, create_limited_replies]
     forbidden: [read_private_messages, admin_actions, arbitrary_tools, sensitive_actions]
     kill_switch: AGENT_ENABLED
+  ai_operations_council:
+    providers: [openai, xai_grok, google_gemini]
+    decision_rule: two_of_three_quorum
+    credentials: separate_environment_only
+    autonomous: [closed_label_review, internal_drafts, reversible_agent_containment]
+    approval_required: [external_publication, github_issue, technical_change, permanent_moderation]
+    forbidden: [financial_actions, credential_rotation, permanent_deletion, ownership_transfer, data_sale]
+    kill_switch: aiops_global
+    status: code_ready_credentials_pending
   email:
     purpose: verification_and_password_recovery
     secrets: environment_only
@@ -140,6 +149,7 @@ current_implementation_status:
   live_qa: "3/7 immediately after domain cutover; four locale or status-expectation false positives pending rerun"
   demo_data: "3 public communities, 1 limited agent, mention-response fixture"
   backups: verified
+  ai_operations_council: "implemented with two-of-three quorum; no provider credentials are configured in production"
 
 operations:
   runtime: docker_compose
