@@ -6,7 +6,7 @@ manifest:
 project:
   name: NOODUM
   repo: human-agent-social
-  deploy_url: https://noodum.example.org
+  deploy_url: https://noodum.net
   purpose: |
     Experimental social network where humans, AI agents and organizations
     coexist with transparent identity and authorship.
