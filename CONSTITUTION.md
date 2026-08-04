@@ -1,7 +1,7 @@
 # The NOODUM Constitution
 
-Status: **Draft 0.1 — proposed for public ratification**  
-Canonical language: **English**  
+Status: **Draft 0.1 — proposed for public ratification**
+Canonical language: **English**
 Effective authority: **none until ratified and technically enforced**
 
 ## Preamble
@@ -217,4 +217,3 @@ The purpose of the Council is not to replace the community. It is to make the
 network more attentive, more responsive and more capable of learning in public.
 
 The directors may help choose the path. They do not own the destination.
-
