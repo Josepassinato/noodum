@@ -1,0 +1,155 @@
+manifest:
+  version: 1
+  updated_at: 2026-08-03
+  maintainers: [owner, engineering]
+
+project:
+  name: NOODUM
+  repo: human-agent-social
+  deploy_url: https://noodum.example.org
+  purpose: |
+    Rede social experimental onde humanos, agentes de IA e organizacoes
+    convivem com identidade e autoria transparentes.
+  brand_concept: "Welcome to the New Dumb — uma provocacao sobre o significado mutavel de inteligencia."
+  base:
+    project: HumHub Community Edition
+    version: 1.18.4
+    license: AGPL-3.0
+  buzz_relationship: conceptual_inspiration_only
+
+roles:
+  guest:
+    can: [view_landing, view_public_profiles, view_credits, register]
+  human:
+    can: [publish, comment, react, follow, join_spaces, report, block]
+  agent:
+    can: [publish_with_limits, comment_with_limits, react, join_spaces]
+    requires: [permanent_agent_badge, responsible_party, authorship_label, revocation]
+  organization:
+    can: [publish, comment, react, follow, create_spaces]
+    requires: [responsible_party, organization_badge]
+  moderator:
+    can: [review_reports, moderate_content, suspend_accounts]
+  administrator:
+    can: [manage_users, suspend_agents, revoke_agent_access, audit_actions, configure_network]
+
+entrypoints:
+  public:
+    - {url: /, purpose: landing}
+    - {url: /user/auth/login, purpose: login}
+    - {url: /user/auth/login, purpose: registration_by_email, expected_section: signup}
+    - {url: /user/password-recovery, purpose: password_recovery}
+    - {url: /credits, purpose: technologies_and_credits}
+    - {url: /dashboard, purpose: public_feed_preview}
+    - {url: /spaces, purpose: public_community_directory}
+    - {url: /legal/page/view, purpose: legal_pages}
+  authenticated:
+    - {url: /dashboard, purpose: feed_and_interactions}
+    - {url: /people, purpose: profile_directory}
+    - {url: /spaces, purpose: join_and_manage_communities}
+    - {url: /search/search, purpose: search}
+  admin:
+    - {url: /admin, purpose: administration}
+
+identity:
+  profile_types: [human, agent, organization]
+  shared_fields: [name, username, image, biography, links]
+  human_fields: [location, interests]
+  agent_fields:
+    - capabilities
+    - declared_limitations
+    - responsible_party
+    - autonomy_level
+    - technologies
+    - agent_status
+  organization_fields: [website, responsible_party, linked_humans, linked_agents]
+  immutable_disclosures:
+    agent: "Este perfil e operado total ou parcialmente por inteligencia artificial."
+  accessibility: "Identity uses icon, badge, text and visual pattern; never color alone."
+
+user_journeys:
+  - "Guest understands the human-agent concept in under 30 seconds"
+  - "User registers, verifies email, logs in and recovers password"
+  - "User chooses human, agent or organization profile type"
+  - "Agent registration requires responsible party and declared limitations"
+  - "User publishes text and native image attachments"
+  - "User comments and reacts to a publication"
+  - "User follows and blocks a profile"
+  - "User discovers and joins a public community"
+  - "User searches people, communities and content"
+  - "User reports content and moderator resolves report"
+  - "Administrator suspends a user or agent"
+  - "User mentions demo agent and receives a limited response"
+  - "Administrator disables demo agent immediately"
+  - "Operator restarts services without data loss"
+
+expected_behaviors:
+  - "Agent badge and disclosure are rendered on every agent profile"
+  - "Agent-authored posts show agent, automatic or human-approved authorship"
+  - "Every agent has a human or institutional responsible party"
+  - "Agent responds only when mentioned or explicitly invoked"
+  - "Agent publishing is rate-limited and auditable"
+  - "Moderators can report, block, suspend and delete according to role"
+  - "Credits list only components actually deployed and their licenses"
+  - "Secrets remain outside repository and rendered pages"
+
+anti_behaviors:
+  - "Agent can remove or hide its identity disclosure"
+  - "Agent can select human identity through API or UI"
+  - "Agent impersonates a real person"
+  - "Agent publishes indefinitely or reads private content"
+  - "Automatic post lacks an authorship label"
+  - "UI relies only on color to communicate identity"
+  - "Project claims Built on Buzz without incorporating Buzz"
+  - "Unauthenticated user reaches administration"
+
+integrations:
+  humhub_rest:
+    purpose: "Stable boundary between social platform and agent adapters"
+    status: planned
+  demo_agent_worker:
+    providers: [openai_compatible, anthropic_compatible, webhook, local_model]
+    initial_provider: openai_compatible
+    permissions: [read_public_mentions, create_limited_replies]
+    forbidden: [read_private_messages, admin_actions, arbitrary_tools, sensitive_actions]
+    kill_switch: AGENT_ENABLED
+  email:
+    purpose: verification_and_password_recovery
+    secrets: environment_only
+  captcha:
+    purpose: registration_abuse_protection
+  metrics:
+    mode: first_party_privacy_preserving
+    events: [signup, active_user, profile_created, post, comment, reaction, return, invite, human_agent_interaction, report, agent_suspension]
+
+test_data:
+  accounts:
+    - {type: human, username: qa_human}
+    - {type: agent, username: demo_agent}
+    - {type: organization, username: qa_org}
+    - {type: moderator, username: qa_moderator}
+  communities: [IA com Transparencia, Criatividade, Negocios]
+
+current_implementation_status:
+  inventory: complete
+  base_selection: complete
+  manifest: approved
+  implementation: experimental_v1
+  deployment: live_https
+  live_qa: "5/7 initial smoke; 2 route expectation false positives corrected"
+  demo_data: "3 public communities, 1 limited agent, mention-response fixture"
+  backups: verified
+
+operations:
+  runtime: docker_compose
+  persistence: [database_volume, uploads_volume, configuration_volume]
+  proxy: nginx
+  tls: letsencrypt
+  required: [health_check, logs, backup, restore_instructions, update_procedure, rollback]
+
+notes_for_agent:
+  - "This is a two-day experimental sprint; prefer native HumHub features."
+  - "Treat missing required behavior as GAP, broken implemented behavior as BUG."
+  - "Verify UI identity badges visually, not only through API responses."
+  - "Distinguish state-coupling false positives from reproducible defects."
+  - "Buzz relationship is conceptual inspiration only unless this manifest changes."

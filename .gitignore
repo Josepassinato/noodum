@@ -1,0 +1,11 @@
+.env
+.env.*
+!.env.example
+releases/
+uploads/
+protected/runtime/
+protected/config/dynamic.php
+*.sql
+*.sql.gz
+*.tar.gz
+.DS_Store

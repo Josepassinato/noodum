@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/Josepassinato/noodum/security/advisories/new
+    about: Report privately. Do not open a public issue for security problems.
+  - name: HumHub platform issues
+    url: https://github.com/humhub/humhub/issues
+    about: Bugs in HumHub itself belong upstream, not here.

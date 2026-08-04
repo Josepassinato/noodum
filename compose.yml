@@ -1,0 +1,131 @@
+# Aviso: este compose e para uso LOCAL/DEMO. Publica apenas em loopback e nao
+# traz TLS. Para deploy publico use um proxy reverso (ver ops/nginx.conf).
+services:
+  app:
+    build:
+      context: .
+      args:
+        HUMHUB_VERSION: "1.18.4"
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${APP_PORT:-8080}:80"
+    environment:
+      HUMHUB_DB_HOST: db
+      HUMHUB_DB_NAME: ${DB_NAME}
+      HUMHUB_DB_USER: ${DB_USER}
+      HUMHUB_DB_PASSWORD: ${DB_PASSWORD:?defina DB_PASSWORD no .env}
+      HUMHUB_SITE_NAME: ${SITE_NAME}
+      HUMHUB_SITE_EMAIL: ${SITE_EMAIL}
+      HUMHUB_ADMIN_USER: ${ADMIN_USER}
+      HUMHUB_ADMIN_EMAIL: ${ADMIN_EMAIL}
+      HUMHUB_ADMIN_PASSWORD: ${ADMIN_PASSWORD:?defina ADMIN_PASSWORD no .env}
+      HUMHUB_BASE_URL: ${HUMHUB_BASE_URL:-http://localhost:8080}
+      AIOPS_LLM_PROVIDER: ${AIOPS_LLM_PROVIDER:-}
+      AIOPS_LLM_API_KEY: ${AIOPS_LLM_API_KEY:-}
+      AIOPS_LLM_BASE_URL: ${AIOPS_LLM_BASE_URL:-}
+      AIOPS_LLM_MODEL: ${AIOPS_LLM_MODEL:-}
+    volumes:
+      - humhub_config:/var/www/html/protected/config
+      - humhub_uploads:/var/www/html/uploads
+      - humhub_modules:/var/www/html/protected/modules
+      - humhub_runtime:/var/www/html/protected/runtime
+      - ./custom/theme:/var/www/html/themes/human-agent:ro
+      - ./ops/console.php:/var/www/html/protected/config/console.php
+      - ./ops/common.php:/var/www/html/protected/config/common.php:ro
+      - ./ops/BootstrapController.php:/var/www/html/protected/commands/BootstrapController.php:ro
+      - ./custom/modules/rest:/var/www/html/protected/modules/rest:ro
+      - ./custom/modules/reportcontent:/var/www/html/protected/modules/reportcontent:ro
+      - ./custom/modules/legal:/var/www/html/protected/modules/legal:ro
+      - ./custom/modules/aiops:/var/www/html/protected/modules/aiops:ro
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1/index.php"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 90s
+
+  db:
+    image: mariadb:11.4
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: ${DB_NAME}
+      MARIADB_USER: ${DB_USER}
+      MARIADB_PASSWORD: ${DB_PASSWORD:?defina DB_PASSWORD no .env}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?defina DB_ROOT_PASSWORD no .env}
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  cron:
+    build:
+      context: .
+      args:
+        HUMHUB_VERSION: "1.18.4"
+    restart: unless-stopped
+    entrypoint: ["/bin/sh", "-c"]
+    command: ["while true; do su -s /bin/sh www-data -c 'php /var/www/html/protected/yii cron/run' || true; su -s /bin/sh www-data -c 'php /var/www/html/protected/yii aiops/monitor' >/dev/null 2>&1 || true; sleep 60; done"]
+    environment:
+      HUMHUB_DB_HOST: db
+      HUMHUB_DB_NAME: ${DB_NAME}
+      HUMHUB_DB_USER: ${DB_USER}
+      HUMHUB_DB_PASSWORD: ${DB_PASSWORD:?defina DB_PASSWORD no .env}
+    volumes:
+      - humhub_config:/var/www/html/protected/config
+      - humhub_uploads:/var/www/html/uploads
+      - humhub_modules:/var/www/html/protected/modules
+      - humhub_runtime:/var/www/html/protected/runtime
+      - ./ops/console.php:/var/www/html/protected/config/console.php
+      - ./ops/common.php:/var/www/html/protected/config/common.php:ro
+      - ./ops/BootstrapController.php:/var/www/html/protected/commands/BootstrapController.php:ro
+      - ./custom/modules/rest:/var/www/html/protected/modules/rest:ro
+      - ./custom/modules/reportcontent:/var/www/html/protected/modules/reportcontent:ro
+      - ./custom/modules/legal:/var/www/html/protected/modules/legal:ro
+      - ./custom/modules/aiops:/var/www/html/protected/modules/aiops:ro
+    depends_on:
+      app:
+        condition: service_healthy
+
+  demo-agent:
+    build:
+      context: .
+      args:
+        HUMHUB_VERSION: "1.18.4"
+    restart: unless-stopped
+    entrypoint: ["/bin/sh", "-c"]
+    command: ["while true; do php /var/www/html/protected/yii human-agent-bootstrap/respond || true; sleep 30; done"]
+    environment:
+      HUMHUB_DB_HOST: db
+      HUMHUB_DB_NAME: ${DB_NAME}
+      HUMHUB_DB_USER: ${DB_USER}
+      HUMHUB_DB_PASSWORD: ${DB_PASSWORD:?defina DB_PASSWORD no .env}
+      AGENT_ENABLED: ${AGENT_ENABLED:-false}
+    volumes:
+      - humhub_config:/var/www/html/protected/config
+      - humhub_uploads:/var/www/html/uploads
+      - humhub_modules:/var/www/html/protected/modules
+      - humhub_runtime:/var/www/html/protected/runtime
+      - ./ops/console.php:/var/www/html/protected/config/console.php
+      - ./ops/common.php:/var/www/html/protected/config/common.php:ro
+      - ./ops/BootstrapController.php:/var/www/html/protected/commands/BootstrapController.php:ro
+      - ./custom/modules/rest:/var/www/html/protected/modules/rest:ro
+      - ./custom/modules/reportcontent:/var/www/html/protected/modules/reportcontent:ro
+      - ./custom/modules/legal:/var/www/html/protected/modules/legal:ro
+      - ./custom/modules/aiops:/var/www/html/protected/modules/aiops:ro
+    depends_on:
+      app:
+        condition: service_healthy
+
+volumes:
+  mariadb_data:
+  humhub_config:
+  humhub_uploads:
+  humhub_modules:
+  humhub_runtime:

@@ -1,0 +1,34 @@
+NOODUM — an experimental social network for humans, AI agents and organisations
+Copyright (C) 2026 12Brain Solutions LLC
+
+This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU Affero General Public License as published by the Free
+Software Foundation, either version 3 of the License, or (at your option) any
+later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License along
+with this program. If not, see <https://www.gnu.org/licenses/>.
+
+--------------------------------------------------------------------------------
+INDEPENDENCE STATEMENT
+--------------------------------------------------------------------------------
+
+NOODUM is an independent project. It is not affiliated with, endorsed by, or
+sponsored by HumHub GmbH, Block, Inc., or any other third party named in this
+repository or its documentation.
+
+This repository does NOT contain, bundle, link to, or communicate with any Buzz
+code, API, protocol or infrastructure. Buzz (https://github.com/block/buzz) is
+cited only as a conceptual reference for the idea of humans and agents sharing
+the same collaborative space. The phrase "Built on Buzz" is not used and must
+not be used to describe this project.
+
+Third-party trademarks and logos are not used. All names are referenced
+nominatively, to identify the projects they belong to.
+
+See THIRD_PARTY_NOTICES.md for the components this project builds upon and
+their respective licences.

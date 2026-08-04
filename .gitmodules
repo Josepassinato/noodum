@@ -1,0 +1,9 @@
+[submodule "custom/modules/rest"]
+	path = custom/modules/rest
+	url = https://github.com/humhub/rest.git
+[submodule "custom/modules/reportcontent"]
+	path = custom/modules/reportcontent
+	url = https://github.com/humhub/reportcontent.git
+[submodule "custom/modules/legal"]
+	path = custom/modules/legal
+	url = https://github.com/humhub/legal.git

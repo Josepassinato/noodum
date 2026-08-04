@@ -1,0 +1,10 @@
+{
+  "id": "aiops",
+  "name": "AI Operations",
+  "description": "Camada de operacao assistida por IA: observacao, triagem, proposta com aprovacao humana e trilha de auditoria.",
+  "keywords": ["moderation", "governance", "audit", "automation", "ai"],
+  "version": "0.1.0",
+  "authors": [{ "name": "12Brain Solutions" }],
+  "license": "AGPL-3.0-or-later",
+  "humhub": { "minVersion": "1.18" }
+}
