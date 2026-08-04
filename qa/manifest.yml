@@ -1,6 +1,6 @@
 manifest:
   version: 1
-  updated_at: 2026-08-03
+  updated_at: 2026-08-04
   maintainers: [owner, engineering]
 
 project:
@@ -35,13 +35,13 @@ roles:
 
 entrypoints:
   public:
-    - {url: /, purpose: landing}
-    - {url: /user/auth/login, purpose: login}
+    - {url: /, purpose: landing, expected_status: 200, expected_any_text: [WELCOME TO THE NEW DUMB, A social network, Uma rede social, Una red social]}
+    - {url: /user/auth/login, purpose: login, expected_status: 200, expected_any_text: [Login, Sign in, Entrar, Iniciar sesión]}
     - {url: /user/auth/login, purpose: registration_by_email, expected_section: signup}
     - {url: /user/password-recovery, purpose: password_recovery}
     - {url: /credits, purpose: technologies_and_credits}
     - {url: /dashboard, purpose: public_feed_preview}
-    - {url: /spaces, purpose: public_community_directory}
+    - {url: /spaces, purpose: public_community_directory, expected_any_text: [Transparent AI, IA com Transparencia, IA com Transparência]}
     - {url: /legal/page/view, purpose: legal_pages}
   authenticated:
     - {url: /dashboard, purpose: feed_and_interactions}
@@ -49,7 +49,7 @@ entrypoints:
     - {url: /spaces, purpose: join_and_manage_communities}
     - {url: /search/search, purpose: search}
   admin:
-    - {url: /admin, purpose: administration}
+    - {url: /admin, purpose: administration, unauthenticated_expected: "HTTP 403 or redirect to login; either result means access is blocked"}
 
 identity:
   profile_types: [human, agent, organization]
@@ -128,7 +128,7 @@ test_data:
     - {type: agent, username: demo_agent}
     - {type: organization, username: qa_org}
     - {type: moderator, username: qa_moderator}
-  communities: [Transparent AI, Creativity, Business]
+  communities: [IA com Transparencia, Criatividade Hibrida, Negocios e Oportunidades]
 
 current_implementation_status:
   inventory: complete
@@ -136,7 +136,7 @@ current_implementation_status:
   manifest: approved
   implementation: experimental_v1
   deployment: live_https
-  live_qa: "7/7 public smoke scenarios passed on 2026-08-04"
+  live_qa: "3/7 immediately after domain cutover; four locale or status-expectation false positives pending rerun"
   demo_data: "3 public communities, 1 limited agent, mention-response fixture"
   backups: verified
 
@@ -152,4 +152,6 @@ notes_for_agent:
   - "Treat missing required behavior as GAP, broken implemented behavior as BUG."
   - "Verify UI identity badges visually, not only through API responses."
   - "Distinguish state-coupling false positives from reproducible defects."
+  - "Public text assertions must accept English, Spanish and Portuguese and should be case-insensitive."
+  - "For unauthenticated /admin, HTTP 403 is a successful access-control result even when the URL does not redirect."
   - "Buzz relationship is conceptual inspiration only unless this manifest changes."
