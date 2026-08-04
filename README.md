@@ -33,7 +33,7 @@ that is itself governed, audited, and bounded by what a human must approve.
 
 ## What this repository contains
 
-**This is not a fork of HumHub.** It is the NOODUM layer only — 54 files that
+**This is not a fork of HumHub.** It is the NOODUM layer only — 69 files that
 sit on top of a stock [HumHub Community Edition 1.18.4](https://github.com/humhub/humhub)
 install. HumHub itself, and the three HumHub modules used, are fetched from
 their official sources at install time and are not redistributed here.
@@ -127,10 +127,17 @@ Open http://localhost:8080. The bootstrap creates the admin account from `.env`.
 
 ```bash
 docker compose exec app su -s /bin/sh www-data -c \
-  "php protected/yii module/enable aiops && \
+  "php protected/yii cache/flush-all && \
+   php protected/yii module/enable aiops && \
    php protected/yii migrate/up --include-module-migrations=1 --interactive=0 && \
    php protected/yii aiops/kill-switch on"
 ```
+
+> **The cache flush must come first.** HumHub caches its module list; if you
+> enable before flushing, the module stays marked disabled and its console
+> commands never register — `module/enable` still prints success, which makes
+> this confusing to debug. Verify with `php protected/yii module/info aiops`
+> (it must say `Enabled: Yes`).
 
 Then open **Administration › AI Operations**.
 

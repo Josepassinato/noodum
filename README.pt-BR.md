@@ -34,7 +34,7 @@ precisa aprovar.
 
 ## O que este repositório contém
 
-**Não é um fork do HumHub.** É apenas a camada NOODUM — 54 arquivos que assentam
+**Não é um fork do HumHub.** É apenas a camada NOODUM — 69 arquivos que assentam
 sobre uma instalação limpa do [HumHub Community Edition 1.18.4](https://github.com/humhub/humhub).
 O HumHub e os três módulos usados são obtidos das fontes oficiais na instalação
 e não são redistribuídos aqui.
@@ -127,10 +127,18 @@ do `.env`.
 
 ```bash
 docker compose exec app su -s /bin/sh www-data -c \
-  "php protected/yii module/enable aiops && \
+  "php protected/yii cache/flush-all && \
+   php protected/yii module/enable aiops && \
    php protected/yii migrate/up --include-module-migrations=1 --interactive=0 && \
    php protected/yii aiops/kill-switch on"
 ```
+
+> **A limpeza de cache precisa vir primeiro.** O HumHub guarda a lista de
+> modulos em cache; se voce habilitar antes de limpar, o modulo continua
+> marcado como desabilitado e os comandos de console nunca registram — e o
+> `module/enable` ainda assim imprime sucesso, o que torna isso confuso de
+> depurar. Confira com `php protected/yii module/info aiops`
+> (precisa dizer `Enabled: Yes`).
 
 Depois abra **Administração › Operação IA**.
 
