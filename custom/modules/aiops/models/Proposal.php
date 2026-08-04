@@ -66,8 +66,8 @@ class Proposal extends ActiveRecord
         if (!Governance::requiresApproval((string)$this->$attribute)) {
             $this->addError(
                 $attribute,
-                'Somente capacidades de nivel 2 podem virar proposta. '
-                . 'Recebido "' . $this->$attribute . '" (nivel ' . Governance::levelFor((string)$this->$attribute) . ').'
+                'Only level 2 capabilities can become proposals. '
+                . 'Received "' . $this->$attribute . '" (level ' . Governance::levelFor((string)$this->$attribute) . ').'
             );
         }
     }

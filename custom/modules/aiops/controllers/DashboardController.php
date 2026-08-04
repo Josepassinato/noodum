@@ -66,7 +66,7 @@ class DashboardController extends Controller
             throw new \yii\web\NotFoundHttpException();
         }
 
-        $enforcement->revert(Yii::$app->user->id, 'revertido manualmente pela administracao');
+        $enforcement->revert(Yii::$app->user->id, 'manually reverted by an administrator');
 
         AuditEntry::record([
             'actor_type' => AuditEntry::ACTOR_HUMAN,

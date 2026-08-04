@@ -43,19 +43,19 @@ final class Executor
     ): ?Enforcement {
         if (!Governance::isAutonomous($capability)) {
             $this->audit($capability, $trigger, 'enforce', AuditEntry::RESULT_BLOCKED, $subjectType, $subjectId, [
-                'blocked_because' => 'capacidade nao e de nivel 1',
+                'blocked_because' => 'capability is not level 1',
                 'level' => Governance::levelFor($capability),
             ], $confidence);
 
             throw new RuntimeException(
-                "aiops: tentativa de execucao autonoma de capacidade nivel "
-                . Governance::levelFor($capability) . " ({$capability}) recusada."
+                "aiops: autonomous execution attempt for level "
+                . Governance::levelFor($capability) . " capability ({$capability}) was rejected."
             );
         }
 
         if (!$this->module->isCapabilityEnabled($capability)) {
             $this->audit($capability, $trigger, 'enforce', AuditEntry::RESULT_BLOCKED, $subjectType, $subjectId, [
-                'blocked_because' => 'capacidade desligada na configuracao',
+                'blocked_because' => 'capability disabled in configuration',
             ] + $evidence, $confidence);
 
             return null;
@@ -63,7 +63,7 @@ final class Executor
 
         if ($subjectUsername !== null && (new RulesEngine($this->module))->isAllowlisted($subjectUsername)) {
             $this->audit($capability, $trigger, 'enforce', AuditEntry::RESULT_BLOCKED, $subjectType, $subjectId, [
-                'blocked_because' => 'conta em allowlist',
+                'blocked_because' => 'account is allowlisted',
                 'username' => $subjectUsername,
             ] + $evidence, $confidence);
 
@@ -129,19 +129,19 @@ final class Executor
     ): ?Proposal {
         if (Governance::isHumanOnly($capability)) {
             $this->audit($capability, $trigger, 'propose', AuditEntry::RESULT_BLOCKED, $subjectType, $subjectId, [
-                'blocked_because' => 'capacidade reservada a decisao humana (nivel 3)',
+                'blocked_because' => 'capability reserved for human decision (level 3)',
             ], $confidence);
 
-            throw new RuntimeException("aiops: capacidade nivel 3 ({$capability}) nao pode ser proposta pela IA.");
+            throw new RuntimeException("aiops: level 3 capability ({$capability}) cannot be proposed by AI.");
         }
 
         if (!Governance::requiresApproval($capability)) {
-            throw new RuntimeException("aiops: {$capability} nao e capacidade de nivel 2.");
+            throw new RuntimeException("aiops: {$capability} is not a level 2 capability.");
         }
 
         if (!$this->module->isCapabilityEnabled($capability)) {
             $this->audit($capability, $trigger, 'propose', AuditEntry::RESULT_BLOCKED, $subjectType, $subjectId, [
-                'blocked_because' => 'capacidade desligada na configuracao',
+                'blocked_because' => 'capability disabled in configuration',
             ] + $evidence, $confidence);
 
             return null;
@@ -149,7 +149,7 @@ final class Executor
 
         if ($confidence < $this->module->getMinConfidence()) {
             $this->audit($capability, $trigger, 'propose', AuditEntry::RESULT_OBSERVED, $subjectType, $subjectId, [
-                'not_proposed_because' => 'confianca abaixo do minimo',
+                'not_proposed_because' => 'confidence below minimum',
                 'min_confidence' => $this->module->getMinConfidence(),
             ] + $evidence, $confidence);
 
@@ -232,7 +232,7 @@ final class Executor
             ->all();
 
         foreach ($expired as $enforcement) {
-            $enforcement->revert(null, 'prazo expirado');
+            $enforcement->revert(null, 'time limit expired');
             $this->audit(
                 'housekeeping',
                 'cron',
@@ -269,7 +269,7 @@ final class Executor
                 AuditEntry::RESULT_REJECTED,
                 $proposal->subject_type,
                 $proposal->subject_id,
-                ['proposal_id' => $proposal->id, 'note' => 'expirou sem decisao humana; nenhuma acao executada']
+                ['proposal_id' => $proposal->id, 'note' => 'expired without a human decision; no action executed']
             );
         }
 

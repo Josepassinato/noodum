@@ -144,9 +144,9 @@ final class OperationsManager
                 'remove_content',
                 'content',
                 $contentId,
-                "Conteudo acumulou {$count} denuncias (limiar: {$this->module->getEscalationThreshold()}).",
-                'Revisar e decidir sobre remocao do conteudo',
-                'Remocao afeta o autor e quem interagiu. Reversivel apenas por restauracao manual.',
+                "Content accumulated {$count} reports (threshold: {$this->module->getEscalationThreshold()}).",
+                'Review the reports and decide whether the content should be removed',
+                'Removal affects the author and participants. Reversible only by manual restoration.',
                 ['reports' => $count, 'reasons' => $report['reasons']],
                 $trigger,
                 $confidence
@@ -196,11 +196,11 @@ final class OperationsManager
 
             if ($duplicates['count'] >= 3) {
                 $score = min($score + 0.3, 1.0);
-                $signals['reasons'][] = "conteudo repetido {$duplicates['count']}x em 1h";
+                $signals['reasons'][] = "content repeated {$duplicates['count']} times in 1h";
             }
             if ($volume >= 30) {
                 $score = min($score + 0.2, 1.0);
-                $signals['reasons'][] = "volume alto ({$volume} publicacoes em 1h)";
+                $signals['reasons'][] = "high volume ({$volume} publications in 1h)";
             }
 
             $evidence = [
@@ -230,7 +230,7 @@ final class OperationsManager
                     'rate_limit_agent',
                     Enforcement::SUBJECT_USER,
                     $userId,
-                    'Conta automatizada com sinais fortes de abuso: ' . implode('; ', $signals['reasons']),
+                    'Automated account with strong abuse signals: ' . implode('; ', $signals['reasons']),
                     $evidence,
                     $trigger,
                     $score,
@@ -244,9 +244,9 @@ final class OperationsManager
                     'suspend_account',
                     'user',
                     $userId,
-                    'Conta humana com sinais fortes de abuso: ' . implode('; ', $signals['reasons']),
-                    'Revisar a conta e decidir sobre suspensao',
-                    'Suspensao impede o acesso da pessoa. Reversivel por um administrador.',
+                    'Human account with strong abuse signals: ' . implode('; ', $signals['reasons']),
+                    'Review the account and decide whether to suspend it',
+                    'Suspension prevents access and can be reversed by an administrator.',
                     $evidence,
                     $trigger,
                     $score
@@ -293,7 +293,7 @@ final class OperationsManager
                 'quarantine_agent',
                 Enforcement::SUBJECT_USER,
                 $finding['user_id'],
-                'Perfil fora de conformidade apos carencia: ' . implode('; ', $finding['issues']),
+                'Non-compliant profile after the grace period: ' . implode('; ', $finding['issues']),
                 ['issues' => $finding['issues'], 'username' => $finding['username']],
                 $trigger,
                 1.0,

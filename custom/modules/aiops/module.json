@@ -1,7 +1,7 @@
 {
   "id": "aiops",
   "name": "AI Operations",
-  "description": "Camada de operacao assistida por IA: observacao, triagem, proposta com aprovacao humana e trilha de auditoria.",
+  "description": "AI-assisted operations layer: observation, triage, human-approved proposals and an audit trail.",
   "keywords": ["moderation", "governance", "audit", "automation", "ai"],
   "version": "0.1.0",
   "authors": [{ "name": "12Brain Solutions" }],

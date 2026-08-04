@@ -5,20 +5,20 @@ use yii\helpers\Url;
 /* @var $filter ?string */
 ?>
 <div class="panel panel-default">
-    <div class="panel-heading">Trilha de auditoria</div>
+    <div class="panel-heading">Audit trail</div>
     <div class="panel-body">
         <p>
-            <?php foreach ([null => 'todos', 'observed' => 'observado', 'proposed' => 'proposto',
-                'executed' => 'executado', 'blocked' => 'bloqueado', 'reverted' => 'revertido',
-                'approved' => 'aprovado', 'rejected' => 'rejeitado', 'failed' => 'falhou'] as $key => $label): ?>
+            <?php foreach ([null => 'all', 'observed' => 'observed', 'proposed' => 'proposed',
+                'executed' => 'executed', 'blocked' => 'blocked', 'reverted' => 'reverted',
+                'approved' => 'approved', 'rejected' => 'rejected', 'failed' => 'failed'] as $key => $label): ?>
                 <a class="btn btn-xs <?= $filter === $key ? 'btn-primary' : 'btn-default' ?>"
                    href="<?= Url::to(['audit', 'result' => $key]) ?>"><?= Html::encode($label) ?></a>
             <?php endforeach; ?>
         </p>
         <table class="table table-condensed table-striped">
             <thead><tr>
-                <th>Quando (UTC)</th><th>Ator</th><th>Gatilho</th><th>Nivel</th><th>Capacidade</th>
-                <th>Acao</th><th>Resultado</th><th>Alvo</th><th>Conf.</th><th>Rollback</th><th>Evidencia</th>
+                <th>When (UTC)</th><th>Actor</th><th>Trigger</th><th>Level</th><th>Capability</th>
+                <th>Action</th><th>Result</th><th>Subject</th><th>Conf.</th><th>Rollback</th><th>Evidence</th>
             </tr></thead>
             <tbody>
             <?php foreach ($entries as $a): ?>
