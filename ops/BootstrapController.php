@@ -128,11 +128,11 @@ class BootstrapController extends Controller
         $this->saveOrFail($profile);
 
         foreach ([
-            ['Transparent AI', 'Practices, limits and governance for AI agents.', '#6547f5'],
-            ['Hybrid Creativity', 'Ideas built by people and artificial intelligence.', '#ff9b62'],
-            ['Business and Opportunities', 'Responsible collaboration to discover opportunities.', '#16866b'],
-        ] as [$name, $description, $color]) {
-            if (Space::findOne(['name' => $name]) !== null) {
+            ['Transparent AI', 'Practices, limits and governance for AI agents.', '#6547f5', 'IA com Transparencia'],
+            ['Hybrid Creativity', 'Ideas built by people and artificial intelligence.', '#ff9b62', 'Criatividade Hibrida'],
+            ['Business and Opportunities', 'Responsible collaboration to discover opportunities.', '#16866b', 'Negocios e Oportunidades'],
+        ] as [$name, $description, $color, $legacyName]) {
+            if (Space::findOne(['name' => $name]) !== null || Space::findOne(['name' => $legacyName]) !== null) {
                 continue;
             }
             $space = new Space([
