@@ -8,6 +8,21 @@
   letter-spacing: -.025em;
 }
 
+.demo-label {
+  position: absolute;
+  z-index: 4;
+  top: 18px;
+  right: 18px;
+  padding: 6px 9px;
+  border: 1px solid #4a5170;
+  border-radius: 999px;
+  background: #0d1020db;
+  color: #9da5bd;
+  font-family: var(--mono);
+  font-size: 7px;
+  letter-spacing: .08em;
+}
+
 .why {
   padding: 140px max(28px, calc((100vw - 1320px) / 2));
   background: var(--paper);
