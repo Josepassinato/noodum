@@ -1,5 +1,5 @@
-# Aviso: este compose e para uso LOCAL/DEMO. Publica apenas em loopback e nao
-# traz TLS. Para deploy publico use um proxy reverso (ver ops/nginx.conf).
+# This Compose file is intended for local/demo use. It publishes only on
+# loopback and does not provide TLS. Use a reverse proxy for public deployment.
 services:
   app:
     build:
@@ -13,13 +13,14 @@ services:
       HUMHUB_DB_HOST: db
       HUMHUB_DB_NAME: ${DB_NAME}
       HUMHUB_DB_USER: ${DB_USER}
-      HUMHUB_DB_PASSWORD: ${DB_PASSWORD:?defina DB_PASSWORD no .env}
+      HUMHUB_DB_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in .env}
       HUMHUB_SITE_NAME: ${SITE_NAME}
       HUMHUB_SITE_EMAIL: ${SITE_EMAIL}
       HUMHUB_ADMIN_USER: ${ADMIN_USER}
       HUMHUB_ADMIN_EMAIL: ${ADMIN_EMAIL}
-      HUMHUB_ADMIN_PASSWORD: ${ADMIN_PASSWORD:?defina ADMIN_PASSWORD no .env}
+      HUMHUB_ADMIN_PASSWORD: ${ADMIN_PASSWORD:?set ADMIN_PASSWORD in .env}
       HUMHUB_BASE_URL: ${HUMHUB_BASE_URL:-http://localhost:8080}
+      SMTP_DSN: ${SMTP_DSN:-}
       AIOPS_LLM_PROVIDER: ${AIOPS_LLM_PROVIDER:-}
       AIOPS_LLM_API_KEY: ${AIOPS_LLM_API_KEY:-}
       AIOPS_LLM_BASE_URL: ${AIOPS_LLM_BASE_URL:-}
@@ -53,8 +54,8 @@ services:
     environment:
       MARIADB_DATABASE: ${DB_NAME}
       MARIADB_USER: ${DB_USER}
-      MARIADB_PASSWORD: ${DB_PASSWORD:?defina DB_PASSWORD no .env}
-      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?defina DB_ROOT_PASSWORD no .env}
+      MARIADB_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in .env}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?set DB_ROOT_PASSWORD in .env}
     command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
     volumes:
       - mariadb_data:/var/lib/mysql
@@ -76,7 +77,10 @@ services:
       HUMHUB_DB_HOST: db
       HUMHUB_DB_NAME: ${DB_NAME}
       HUMHUB_DB_USER: ${DB_USER}
-      HUMHUB_DB_PASSWORD: ${DB_PASSWORD:?defina DB_PASSWORD no .env}
+      HUMHUB_DB_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in .env}
+      HUMHUB_SITE_NAME: ${SITE_NAME}
+      HUMHUB_SITE_EMAIL: ${SITE_EMAIL}
+      SMTP_DSN: ${SMTP_DSN:-}
     volumes:
       - humhub_config:/var/www/html/protected/config
       - humhub_uploads:/var/www/html/uploads
@@ -105,7 +109,7 @@ services:
       HUMHUB_DB_HOST: db
       HUMHUB_DB_NAME: ${DB_NAME}
       HUMHUB_DB_USER: ${DB_USER}
-      HUMHUB_DB_PASSWORD: ${DB_PASSWORD:?defina DB_PASSWORD no .env}
+      HUMHUB_DB_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in .env}
       AGENT_ENABLED: ${AGENT_ENABLED:-false}
     volumes:
       - humhub_config:/var/www/html/protected/config

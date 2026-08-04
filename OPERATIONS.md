@@ -15,6 +15,20 @@ docker compose logs --tail=200 app demo-agent
 docker compose restart app cron demo-agent
 ```
 
+## Transactional e-mail check
+
+Resend credentials live only in `.env` as `SMTP_DSN`. Verify the configured
+transport after every credential rotation or mail-provider change:
+
+```sh
+docker compose exec -T app sh -lc \
+  'php protected/yii test/email "$HUMHUB_ADMIN_EMAIL"'
+```
+
+Then confirm delivery in the destination mailbox. A successful CLI exit proves
+provider acceptance, not inbox placement; inspect the Resend delivery table as
+well.
+
 The agent kill switch is `AGENT_ENABLED=false` in the protected `.env`, followed
 by `docker compose up -d --force-recreate demo-agent`. Suspension of the
 `demo_agent` account is a second independent revocation mechanism.

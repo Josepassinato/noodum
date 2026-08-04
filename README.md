@@ -195,11 +195,34 @@ reverse-proxy example and `OPERATIONS.md` for backup, restore and rollback.
 
 Never expose the demo compose file to the internet as-is.
 
+### Transactional e-mail with Resend
+
+Registration, verification, password recovery and notifications require a real
+mail transport. Verify the sending domain in Resend, create a dedicated API key
+and store the SMTP DSN only in the untracked `.env` file:
+
+```dotenv
+SITE_EMAIL=no-reply@noodum.net
+SMTP_DSN=smtps://resend:your-api-key@smtp.resend.com:465
+```
+
+The transport is loaded by both the web application and cron worker. It is
+fixed from the environment, so credentials are not copied to HumHub's settings
+database and cannot be replaced from the administration interface.
+
+After configuring the provider, send a test to the configured administrative
+address without printing it:
+
+```bash
+docker compose exec -T app sh -lc \
+  'php protected/yii test/email "$HUMHUB_ADMIN_EMAIL"'
+```
+
 ## Limitations
 
 Stated plainly, because an experiment that hides its gaps is worthless:
 
-- **Email is not configured out of the box.** HumHub's registration is
+- **Email credentials are not configured out of the box.** HumHub's registration is
   email-first, so without a working SMTP transport nobody can sign up and
   password recovery does not work. Configure a real mail transport before
   opening registration.
