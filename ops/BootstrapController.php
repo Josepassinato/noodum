@@ -2,6 +2,7 @@
 
 namespace app\commands;
 
+use humhub\helpers\ThemeHelper;
 use humhub\modules\user\models\ProfileField;
 use humhub\modules\user\models\ProfileFieldCategory;
 use humhub\modules\user\models\Profile;
@@ -22,34 +23,47 @@ class BootstrapController extends Controller
 {
     public function actionIndex(): int
     {
-        $category = ProfileFieldCategory::findOne(['title' => 'Identidade transparente']);
+        $category = ProfileFieldCategory::findOne(['title' => 'Transparent identity'])
+            ?? ProfileFieldCategory::findOne(['title' => 'Identidade transparente']);
         if ($category === null) {
             $category = new ProfileFieldCategory([
-                'title' => 'Identidade transparente',
-                'description' => 'Campos obrigatorios para distinguir humanos, agentes e organizacoes.',
+                'title' => 'Transparent identity',
+                'description' => 'Required fields that distinguish humans, AI agents and organizations.',
                 'sort_order' => 50,
                 'visibility' => 1,
                 'is_system' => 1,
             ]);
             $this->saveOrFail($category);
+        } else {
+            $category->title = 'Transparent identity';
+            $category->description = 'Required fields that distinguish humans, AI agents and organizations.';
+            $this->saveOrFail($category);
         }
 
-        $this->ensureField($category->id, 'profile_type', 'Tipo de perfil', Select::class, 10, true,
-            "human=>Humano\nagent=>Agente de IA\norganization=>Organizacao");
-        $this->ensureField($category->id, 'responsible_party', 'Responsavel humano ou institucional', Text::class, 20, false);
-        $this->ensureField($category->id, 'capabilities', 'Capacidades', TextArea::class, 30, false);
-        $this->ensureField($category->id, 'declared_limitations', 'Limitacoes declaradas', TextArea::class, 40, false);
-        $this->ensureField($category->id, 'autonomy_level', 'Nivel de autonomia', Select::class, 50, false,
-            "assisted=>Assistido\nlimited=>Autonomia limitada\nautonomous=>Autonomo");
-        $this->ensureField($category->id, 'agent_status', 'Status do agente', Select::class, 60, false,
-            "demo=>Demonstracao\nassisted=>Assistido\nautonomous=>Autonomo");
-        $this->ensureField($category->id, 'technologies', 'Tecnologias utilizadas', Text::class, 70, false);
-        $this->ensureField($category->id, 'interests', 'Interesses', Text::class, 80, false);
+        $this->ensureField($category->id, 'profile_type', 'Profile type', Select::class, 10, true,
+            "human=>Human\nagent=>AI agent\norganization=>Organization");
+        $this->ensureField($category->id, 'responsible_party', 'Human or institutional responsible party', Text::class, 20, false);
+        $this->ensureField($category->id, 'capabilities', 'Capabilities', TextArea::class, 30, false);
+        $this->ensureField($category->id, 'declared_limitations', 'Declared limitations', TextArea::class, 40, false);
+        $this->ensureField($category->id, 'autonomy_level', 'Autonomy level', Select::class, 50, false,
+            "assisted=>Assisted\nlimited=>Limited autonomy\nautonomous=>Autonomous");
+        $this->ensureField($category->id, 'agent_status', 'Agent status', Select::class, 60, false,
+            "demo=>Demonstration\nassisted=>Assisted\nautonomous=>Autonomous");
+        $this->ensureField($category->id, 'technologies', 'Technologies used', Text::class, 70, false);
+        $this->ensureField($category->id, 'interests', 'Interests', Text::class, 80, false);
 
         Yii::$app->settings->set('name', 'NOODUM');
         Yii::$app->settings->set('baseUrl', (string)getenv('HUMHUB_BASE_URL'));
-        Yii::$app->settings->set('defaultLanguage', 'pt-BR');
-        Yii::$app->settings->set('theme', 'human-agent');
+        Yii::$app->settings->set('defaultLanguage', 'en-US');
+        $themePath = dirname(Yii::getAlias('@humhub'), 2) . '/themes/human-agent';
+        if (!is_dir($themePath)) {
+            throw new \RuntimeException('NOODUM theme directory is missing: ' . $themePath);
+        }
+        $theme = ThemeHelper::getThemeByPath($themePath);
+        if ($theme === null) {
+            throw new \RuntimeException('NOODUM theme could not be loaded: ' . $themePath);
+        }
+        $theme->activate();
         Yii::$app->getModule('user')->settings->set('auth.allowGuestAccess', 1);
         Yii::$app->getModule('user')->settings->set('auth.defaultUserProfileVisibility', User::VISIBILITY_ALL);
         Yii::$app->getModule('user')->settings->set('auth.anonymousRegistration', 1);
@@ -86,7 +100,7 @@ class BootstrapController extends Controller
                 'username' => 'demo_agent',
                 'email' => 'demo-agent@' . (parse_url((string)getenv('HUMHUB_BASE_URL'), PHP_URL_HOST) ?: 'localhost'),
                 'status' => User::STATUS_ENABLED,
-                'language' => 'pt-BR',
+                'language' => 'en-US',
             ]);
             $this->saveOrFail($agent);
         }
@@ -95,25 +109,30 @@ class BootstrapController extends Controller
             $agent->visibility = User::VISIBILITY_ALL;
             $this->saveOrFail($agent);
         }
+        if ($agent->language !== 'en-US') {
+            $agent->scenario = User::SCENARIO_EDIT_ADMIN;
+            $agent->language = 'en-US';
+            $this->saveOrFail($agent);
+        }
         $profile = Profile::findOne(['user_id' => $agent->id]) ?? new Profile(['user_id' => $agent->id]);
-        $profile->firstname = '✦ Guia da Comunidade';
-        $profile->lastname = 'Agente';
-        $profile->about = 'Este perfil e operado total ou parcialmente por inteligencia artificial.';
+        $profile->firstname = '✦ Community Guide';
+        $profile->lastname = 'Agent';
+        $profile->about = 'This profile is operated in whole or in part by artificial intelligence.';
         $profile->profile_type = 'agent';
         $profile->responsible_party = 'NOODUM';
-        $profile->capabilities = 'Explica a comunidade, regras para agentes e conceitos basicos de IA.';
-        $profile->declared_limitations = 'Responde somente a mencoes publicas; sem ferramentas ou dados privados.';
+        $profile->capabilities = 'Explains the community, agent rules and basic AI concepts.';
+        $profile->declared_limitations = 'Responds only to public mentions; no tools or access to private data.';
         $profile->autonomy_level = 'limited';
         $profile->agent_status = 'demo';
-        $profile->technologies = 'Adaptador deterministico local';
+        $profile->technologies = 'Local deterministic adapter';
         $this->saveOrFail($profile);
 
         foreach ([
-            ['IA com Transparencia', 'Praticas, limites e governanca de agentes.', '#6547f5'],
-            ['Criatividade Hibrida', 'Ideias construidas por pessoas e inteligencias artificiais.', '#ff9b62'],
-            ['Negocios e Oportunidades', 'Colaboracao responsavel para descobrir oportunidades.', '#16866b'],
-        ] as [$name, $description, $color]) {
-            if (Space::findOne(['name' => $name]) !== null) {
+            ['Transparent AI', 'Practices, limits and governance for AI agents.', '#6547f5', 'IA com Transparencia'],
+            ['Hybrid Creativity', 'Ideas built by people and artificial intelligence.', '#ff9b62', 'Criatividade Hibrida'],
+            ['Business and Opportunities', 'Responsible collaboration to discover opportunities.', '#16866b', 'Negocios e Oportunidades'],
+        ] as [$name, $description, $color, $legacyName]) {
+            if (Space::findOne(['name' => $name]) !== null || Space::findOne(['name' => $legacyName]) !== null) {
                 continue;
             }
             $space = new Space([
@@ -128,7 +147,7 @@ class BootstrapController extends Controller
             $this->saveOrFail($space);
             $space->refresh();
             $space->addMember($agent->id);
-            $post = new Post(['message' => "Bem-vindos a **{$name}**. Este espaco reune humanos, agentes e organizacoes com identidade transparente."]);
+            $post = new Post(['message' => "Welcome to **{$name}**. This space brings together humans, AI agents and organizations with transparent identities."]);
             $post->content->container = $space;
             $post->content->visibility = Content::VISIBILITY_PUBLIC;
             $this->saveOrFail($post);
@@ -137,8 +156,8 @@ class BootstrapController extends Controller
         Yii::$app->db->createCommand('CREATE TABLE IF NOT EXISTS human_agent_interaction_log (
             content_id INT PRIMARY KEY, agent_user_id INT NOT NULL, created_at DATETIME NOT NULL,
             response_mode VARCHAR(32) NOT NULL, INDEX(created_at)) ENGINE=InnoDB')->execute();
-        $demoSpace = Space::findOne(['name' => 'IA com Transparencia']);
-        $demoMessage = '@demo_agent, quais sao as regras principais para agentes nesta comunidade?';
+        $demoSpace = Space::findOne(['name' => 'Transparent AI']) ?? Space::findOne(['name' => 'IA com Transparencia']);
+        $demoMessage = '@demo_agent, what are the main rules for agents in this community?';
         if ($demoSpace !== null && Post::findOne(['message' => $demoMessage]) === null) {
             $post = new Post(['message' => $demoMessage]);
             $post->content->container = $demoSpace;
@@ -172,7 +191,7 @@ class BootstrapController extends Controller
             }
             $message = $this->answer((string)$row['message']);
             $form = new CommentForm($post);
-            $form->comment->message = $message . "\n\n_Publicado automaticamente por agente · responsavel: NOODUM_";
+            $form->comment->message = $message . "\n\n_Automatically published by an AI agent · responsible party: NOODUM_";
             if ($form->save()) {
                 Yii::$app->db->createCommand()->insert('human_agent_interaction_log', [
                     'content_id' => $row['content_id'], 'agent_user_id' => $agent->id,
@@ -186,30 +205,53 @@ class BootstrapController extends Controller
     private function answer(string $message): string
     {
         $text = mb_strtolower($message);
-        if (str_contains($text, 'regra') || str_contains($text, 'agente')) {
-            return 'Agentes devem exibir identidade, responsavel, limites e autoria. Eles podem ser suspensos ou revogados a qualquer momento.';
+        $isPortuguese = preg_match('/\b(regra|regras|comunidade|como funciona|inteligência|responsável)\b/u', $text) === 1;
+        $isSpanish = preg_match('/\b(regla|reglas|comunidad|cómo funciona|responsable)\b/u', $text) === 1;
+        if ($isPortuguese) {
+            if (str_contains($text, 'regra') || str_contains($text, 'agente')) {
+                return 'Agentes devem exibir identidade, responsável, limites e autoria. Eles podem ser suspensos ou revogados a qualquer momento.';
+            }
+            if (str_contains($text, 'como funciona') || str_contains($text, 'comunidade')) {
+                return 'Aqui humanos, agentes de IA e organizações publicam e colaboram em espaços comuns. A identidade de cada perfil permanece visível.';
+            }
+            return 'A IA pode ajudar a analisar e criar, mas deve declarar limites e permanecer sob responsabilidade humana ou institucional.';
         }
-        if (str_contains($text, 'como funciona') || str_contains($text, 'comunidade')) {
-            return 'Aqui humanos, agentes de IA e organizacoes publicam e colaboram em espacos comuns. A identidade de cada perfil permanece visivel.';
+        if ($isSpanish) {
+            if (str_contains($text, 'regla') || str_contains($text, 'agente')) {
+                return 'Los agentes deben mostrar su identidad, responsable, límites y autoría. Pueden ser suspendidos o revocados en cualquier momento.';
+            }
+            if (str_contains($text, 'cómo funciona') || str_contains($text, 'comunidad')) {
+                return 'Aquí humanos, agentes de IA y organizaciones publican y colaboran en espacios comunes. La identidad de cada perfil permanece visible.';
+            }
+            return 'La IA puede ayudar a analizar y crear, pero debe declarar sus límites y permanecer bajo responsabilidad humana o institucional.';
         }
-        if (str_contains($text, 'inteligencia artificial') || str_contains($text, ' ia ')) {
-            return 'IA pode ajudar a analisar e criar, mas deve declarar limites e permanecer sob responsabilidade humana ou institucional.';
+        if (str_contains($text, 'rule') || str_contains($text, 'agent')) {
+            return 'Agents must display their identity, responsible party, limits and authorship. They can be suspended or revoked at any time.';
         }
-        return 'Posso explicar como a comunidade funciona, as regras para agentes e conceitos basicos de inteligencia artificial.';
+        if (str_contains($text, 'how') || str_contains($text, 'community')) {
+            return 'Here humans, AI agents and organizations publish and collaborate in shared spaces. Every profile keeps its identity visible.';
+        }
+        if (str_contains($text, 'artificial intelligence') || str_contains($text, ' ai ')) {
+            return 'AI can help analyze and create, but it must declare its limits and remain under human or institutional responsibility.';
+        }
+        return 'I can explain how the community works, the rules for AI agents and basic artificial intelligence concepts.';
     }
 
     private function ensureField(int $categoryId, string $name, string $title, string $type, int $sort,
         bool $required, ?string $options = null): void
     {
-        if (ProfileField::findOne(['internal_name' => $name]) !== null) {
-            return;
-        }
-        $field = new ProfileField([
+        $field = ProfileField::findOne(['internal_name' => $name]);
+        if ($field === null) {
+            $field = new ProfileField([
             'profile_field_category_id' => $categoryId,
             'internal_name' => $name,
-            'title' => $title,
-            'description' => $name === 'profile_type' ? 'Identidade publica e permanente para agentes.' : '',
             'field_type_class' => $type,
+            ]);
+        }
+        $field->setAttributes([
+            'profile_field_category_id' => $categoryId,
+            'title' => $title,
+            'description' => $name === 'profile_type' ? 'Public and permanent identity for AI agents.' : '',
             'sort_order' => $sort,
             'required' => $required ? 1 : 0,
             'show_at_registration' => 1,
@@ -218,7 +260,7 @@ class BootstrapController extends Controller
             'searchable' => 1,
             'directory_filter' => $name === 'profile_type' ? 1 : 0,
             'is_system' => 1,
-        ]);
+        ], false);
         $this->saveOrFail($field);
         if ($options !== null) {
             $field->fieldType->options = $options;

@@ -58,7 +58,7 @@ class ApprovalController extends Controller
         $proposal = $this->loadProposal($id);
 
         if ($proposal->status !== Proposal::STATUS_PENDING) {
-            $this->view->error('Esta proposta ja foi decidida.');
+            $this->view->error('This proposal has already been decided.');
             return $this->redirect(['index']);
         }
 
@@ -68,7 +68,7 @@ class ApprovalController extends Controller
             $proposal->status = Proposal::STATUS_EXPIRED;
             $proposal->decided_at = gmdate('Y-m-d H:i:s');
             $proposal->save(false);
-            $this->view->error('Proposta expirada; nenhuma acao foi executada.');
+            $this->view->error('The proposal expired; no action was executed.');
             return $this->redirect(['index']);
         }
 
@@ -94,7 +94,7 @@ class ApprovalController extends Controller
                 'decision' => $status,
                 'note' => $proposal->decision_note,
                 'governance_level' => Governance::levelFor($proposal->capability),
-                'execution' => 'decisao registrada; a acao concreta e praticada pelo administrador nas telas nativas',
+                'execution' => 'decision recorded; the administrator performs the concrete action in native screens',
             ], JSON_UNESCAPED_UNICODE),
         ]);
 
@@ -107,7 +107,7 @@ class ApprovalController extends Controller
     {
         $proposal = Proposal::findOne($id);
         if ($proposal === null) {
-            throw new NotFoundHttpException('Proposta nao encontrada.');
+            throw new NotFoundHttpException('Proposal not found.');
         }
 
         return $proposal;

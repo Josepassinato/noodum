@@ -24,10 +24,10 @@ final class AgentCompliance
 
     /** Campos que um perfil de agente precisa ter preenchidos. */
     private const REQUIRED_AGENT_FIELDS = [
-        'responsible_party' => 'responsavel humano ou institucional',
-        'declared_limitations' => 'limitacoes declaradas',
-        'autonomy_level' => 'nivel de autonomia',
-        'agent_status' => 'situacao do agente',
+        'responsible_party' => 'human or institutional responsible party',
+        'declared_limitations' => 'declared limitations',
+        'autonomy_level' => 'autonomy level',
+        'agent_status' => 'agent status',
     ];
 
     /**
@@ -93,21 +93,21 @@ final class AgentCompliance
         // Perfil sem tipo nenhum: a rede nao consegue rotular a identidade,
         // que e justamente a promessa central.
         if ($type === null || $type === '') {
-            $issues[] = 'perfil sem tipo de identidade definido';
+            $issues[] = 'profile has no declared identity type';
             return $issues;
         }
 
         if ($type !== 'agent') {
             // Organizacao tambem precisa de responsavel, por regra do produto.
             if ($type === 'organization' && $this->isBlank($row, 'responsible_party', $columns)) {
-                $issues[] = 'organizacao sem responsavel declarado';
+                $issues[] = 'organization has no declared responsible party';
             }
             return $issues;
         }
 
         foreach (self::REQUIRED_AGENT_FIELDS as $field => $label) {
             if ($this->isBlank($row, $field, $columns)) {
-                $issues[] = 'agente sem ' . $label;
+                $issues[] = 'agent has no ' . $label;
             }
         }
 

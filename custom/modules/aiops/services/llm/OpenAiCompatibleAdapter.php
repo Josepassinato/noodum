@@ -24,7 +24,13 @@ final class OpenAiCompatibleAdapter implements LlmAdapter
     private string $model;
     private int $timeout;
 
-    public function __construct(?string $apiKey = null, ?string $baseUrl = null, ?string $model = null, int $timeout = 20)
+    public function __construct(
+        ?string $apiKey = null,
+        ?string $baseUrl = null,
+        ?string $model = null,
+        int $timeout = 20,
+        private string $providerName = 'openai-compatible'
+    )
     {
         $this->apiKey = $apiKey ?? (string)getenv('AIOPS_LLM_API_KEY');
         $this->baseUrl = rtrim($baseUrl ?? ((string)getenv('AIOPS_LLM_BASE_URL') ?: 'https://api.openai.com/v1'), '/');
@@ -39,7 +45,7 @@ final class OpenAiCompatibleAdapter implements LlmAdapter
 
     public function describe(): string
     {
-        return 'openai-compatible: ' . $this->model . ' @ ' . parse_url($this->baseUrl, PHP_URL_HOST);
+        return $this->providerName . ': ' . $this->model . ' @ ' . parse_url($this->baseUrl, PHP_URL_HOST);
     }
 
     public function classify(string $text, array $labels, string $instruction): ?array

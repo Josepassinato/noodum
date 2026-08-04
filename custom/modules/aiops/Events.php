@@ -52,7 +52,7 @@ class Events
         try {
             $fn();
         } catch (Throwable $e) {
-            Yii::error('aiops: ' . $context . ' falhou: ' . $e->getMessage(), 'aiops');
+            Yii::error('aiops: ' . $context . ' failed: ' . $e->getMessage(), 'aiops');
         }
     }
 
@@ -76,7 +76,7 @@ class Events
         }
 
         $event->sender->addItem([
-            'label' => 'Operacao IA' . ($pending > 0 ? ' (' . $pending . ')' : ''),
+            'label' => 'AI Operations' . ($pending > 0 ? ' (' . $pending . ')' : ''),
             'url' => Url::to(['/aiops/dashboard']),
             'group' => 'manage',
             'icon' => 'robot',

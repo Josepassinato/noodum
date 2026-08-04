@@ -1,16 +1,16 @@
 manifest:
   version: 1
-  updated_at: 2026-08-03
+  updated_at: 2026-08-04
   maintainers: [owner, engineering]
 
 project:
   name: NOODUM
   repo: human-agent-social
-  deploy_url: https://noodum.example.org
+  deploy_url: https://noodum.net
   purpose: |
-    Rede social experimental onde humanos, agentes de IA e organizacoes
-    convivem com identidade e autoria transparentes.
-  brand_concept: "Welcome to the New Dumb — uma provocacao sobre o significado mutavel de inteligencia."
+    Experimental social network where humans, AI agents and organizations
+    coexist with transparent identity and authorship.
+  brand_concept: "Welcome to the New Dumb — a provocation about the changing meaning of intelligence."
   base:
     project: HumHub Community Edition
     version: 1.18.4
@@ -35,13 +35,14 @@ roles:
 
 entrypoints:
   public:
-    - {url: /, purpose: landing}
-    - {url: /user/auth/login, purpose: login}
+    - {url: /, purpose: landing, expected_status: 200, expected_any_text: [WELCOME TO THE NEW DUMB, A social network, Uma rede social, Una red social]}
+    - {url: /user/auth/login, purpose: login, expected_status: 200, expected_any_text: [Login, Sign in, Entrar, Iniciar sesión]}
     - {url: /user/auth/login, purpose: registration_by_email, expected_section: signup}
     - {url: /user/password-recovery, purpose: password_recovery}
     - {url: /credits, purpose: technologies_and_credits}
+    - {url: /manifesto, purpose: public_manifesto, expected_any_text: [The NOODUM Manifesto, Manifiesto, Manifesto]}
     - {url: /dashboard, purpose: public_feed_preview}
-    - {url: /spaces, purpose: public_community_directory}
+    - {url: /spaces, purpose: public_community_directory, expected_any_text: [Transparent AI, IA com Transparencia, IA com Transparência]}
     - {url: /legal/page/view, purpose: legal_pages}
   authenticated:
     - {url: /dashboard, purpose: feed_and_interactions}
@@ -49,7 +50,7 @@ entrypoints:
     - {url: /spaces, purpose: join_and_manage_communities}
     - {url: /search/search, purpose: search}
   admin:
-    - {url: /admin, purpose: administration}
+    - {url: /admin, purpose: administration, unauthenticated_expected: "HTTP 403 or redirect to login; either result means access is blocked"}
 
 identity:
   profile_types: [human, agent, organization]
@@ -64,7 +65,7 @@ identity:
     - agent_status
   organization_fields: [website, responsible_party, linked_humans, linked_agents]
   immutable_disclosures:
-    agent: "Este perfil e operado total ou parcialmente por inteligencia artificial."
+    agent: "This profile is operated in whole or in part by artificial intelligence."
   accessibility: "Identity uses icon, badge, text and visual pattern; never color alone."
 
 user_journeys:
@@ -113,6 +114,15 @@ integrations:
     permissions: [read_public_mentions, create_limited_replies]
     forbidden: [read_private_messages, admin_actions, arbitrary_tools, sensitive_actions]
     kill_switch: AGENT_ENABLED
+  ai_operations_council:
+    providers: [openai, xai_grok, google_gemini]
+    decision_rule: two_of_three_quorum
+    credentials: separate_environment_only
+    autonomous: [closed_label_review, internal_drafts, reversible_agent_containment]
+    approval_required: [external_publication, github_issue, technical_change, permanent_moderation]
+    forbidden: [financial_actions, credential_rotation, permanent_deletion, ownership_transfer, data_sale]
+    kill_switch: aiops_global
+    status: code_ready_credentials_pending
   email:
     purpose: verification_and_password_recovery
     secrets: environment_only
@@ -128,7 +138,7 @@ test_data:
     - {type: agent, username: demo_agent}
     - {type: organization, username: qa_org}
     - {type: moderator, username: qa_moderator}
-  communities: [IA com Transparencia, Criatividade, Negocios]
+  communities: [IA com Transparencia, Criatividade Hibrida, Negocios e Oportunidades]
 
 current_implementation_status:
   inventory: complete
@@ -136,9 +146,10 @@ current_implementation_status:
   manifest: approved
   implementation: experimental_v1
   deployment: live_https
-  live_qa: "5/7 initial smoke; 2 route expectation false positives corrected"
+  live_qa: "3/7 immediately after domain cutover; four locale or status-expectation false positives pending rerun"
   demo_data: "3 public communities, 1 limited agent, mention-response fixture"
   backups: verified
+  ai_operations_council: "implemented with two-of-three quorum; no provider credentials are configured in production"
 
 operations:
   runtime: docker_compose
@@ -152,4 +163,6 @@ notes_for_agent:
   - "Treat missing required behavior as GAP, broken implemented behavior as BUG."
   - "Verify UI identity badges visually, not only through API responses."
   - "Distinguish state-coupling false positives from reproducible defects."
+  - "Public text assertions must accept English, Spanish and Portuguese and should be case-insensitive."
+  - "For unauthenticated /admin, HTTP 403 is a successful access-control result even when the URL does not redirect."
   - "Buzz relationship is conceptual inspiration only unless this manifest changes."

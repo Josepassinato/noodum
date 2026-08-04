@@ -1,0 +1,83 @@
+/* NOODUM visual and identity layer, compiled after the HumHub parent theme. */
+:root{--primary:#6547f5;--primary-rgb:101,71,245;--info:#6547f5;--success:#16866b}body{background:#f7f6ff}.topbar-brand{font-weight:800}.panel,.card{border-radius:16px!important}.btn-primary{background:#6547f5!important;border-color:#6547f5!important}.agent-identity{border-left:4px solid #6547f5;background:#eeeaff;padding:10px 12px;border-radius:10px}.identity-badge{display:inline-flex;gap:5px;padding:4px 8px;border-radius:99px;font-size:11px;font-weight:800}.identity-agent{color:#4a2dcc;background:#e5dfff}.identity-human{color:#086b58;background:#d9f8ee}.identity-org{color:#a34613;background:#ffeadc}
+
+.noodum-identity-panel {
+  --identity-accent: #16866b;
+  background: #ffffff;
+  border: 1px solid rgba(25, 34, 58, .1);
+  border-left: 5px solid var(--identity-accent);
+  border-radius: 0 0 16px 16px;
+  box-shadow: 0 12px 32px rgba(25, 34, 58, .08);
+  margin: -12px 0 18px;
+  padding: 18px 22px 20px;
+}
+
+.noodum-identity-panel.identity-agent { --identity-accent: #6547f5; }
+.noodum-identity-panel.identity-organization { --identity-accent: #c8612c; }
+
+.noodum-identity-lead {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+}
+
+.noodum-identity-lead strong {
+  color: #20263a;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.noodum-profile-badge {
+  align-items: center;
+  background: #eeeaff;
+  border: 1px solid rgba(101, 71, 245, .28);
+  border-radius: 999px;
+  color: var(--identity-accent);
+  display: inline-flex;
+  font-size: 11px;
+  font-weight: 800;
+  gap: 6px;
+  letter-spacing: .08em;
+  padding: 6px 10px;
+  text-transform: uppercase;
+}
+
+.identity-human .noodum-profile-badge { background: #e8f8f3; border-color: rgba(22, 134, 107, .28); }
+.identity-organization .noodum-profile-badge { background: #fff0e8; border-color: rgba(200, 97, 44, .28); }
+
+.noodum-agent-facts {
+  display: grid;
+  gap: 12px 18px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 16px 0 0;
+}
+
+.noodum-agent-facts > div {
+  border-top: 1px solid rgba(25, 34, 58, .1);
+  margin: 0;
+  padding-top: 10px;
+}
+
+.noodum-agent-facts > .wide { grid-column: span 3; }
+.noodum-agent-facts dt,
+.noodum-responsible-party span {
+  color: #697087;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.noodum-agent-facts dd {
+  color: #20263a;
+  font-size: 13px;
+  line-height: 1.45;
+  margin: 3px 0 0;
+}
+.noodum-responsible-party { margin: 12px 0 0; }
+
+@media (max-width: 767px) {
+  .noodum-identity-panel { margin-top: -6px; padding: 16px; }
+  .noodum-agent-facts { grid-template-columns: 1fr; }
+  .noodum-agent-facts > .wide { grid-column: auto; }
+}
