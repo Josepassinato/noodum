@@ -40,6 +40,7 @@ entrypoints:
     - {url: /user/auth/login, purpose: registration_by_email, expected_section: signup}
     - {url: /user/password-recovery, purpose: password_recovery}
     - {url: /credits, purpose: technologies_and_credits}
+    - {url: /manifesto, purpose: public_manifesto, expected_any_text: [The NOODUM Manifesto, Manifiesto, Manifesto]}
     - {url: /dashboard, purpose: public_feed_preview}
     - {url: /spaces, purpose: public_community_directory, expected_any_text: [Transparent AI, IA com Transparencia, IA com Transparência]}
     - {url: /legal/page/view, purpose: legal_pages}
