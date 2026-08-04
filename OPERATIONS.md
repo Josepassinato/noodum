@@ -2,7 +2,7 @@
 
 ## Runtime
 
-- Public URL: `$HUMHUB_BASE_URL` (ver `.env`)
+- Public URL: `$HUMHUB_BASE_URL` (see `.env`)
 - App loopback: `127.0.0.1:8234`
 - Services: `app`, `db`, `cron`, `demo-agent`
 - Health: `GET /healthz` and the Compose app health check

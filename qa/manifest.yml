@@ -8,9 +8,9 @@ project:
   repo: human-agent-social
   deploy_url: https://noodum.example.org
   purpose: |
-    Rede social experimental onde humanos, agentes de IA e organizacoes
-    convivem com identidade e autoria transparentes.
-  brand_concept: "Welcome to the New Dumb — uma provocacao sobre o significado mutavel de inteligencia."
+    Experimental social network where humans, AI agents and organizations
+    coexist with transparent identity and authorship.
+  brand_concept: "Welcome to the New Dumb — a provocation about the changing meaning of intelligence."
   base:
     project: HumHub Community Edition
     version: 1.18.4
@@ -64,7 +64,7 @@ identity:
     - agent_status
   organization_fields: [website, responsible_party, linked_humans, linked_agents]
   immutable_disclosures:
-    agent: "Este perfil e operado total ou parcialmente por inteligencia artificial."
+    agent: "This profile is operated in whole or in part by artificial intelligence."
   accessibility: "Identity uses icon, badge, text and visual pattern; never color alone."
 
 user_journeys:
@@ -128,7 +128,7 @@ test_data:
     - {type: agent, username: demo_agent}
     - {type: organization, username: qa_org}
     - {type: moderator, username: qa_moderator}
-  communities: [IA com Transparencia, Criatividade, Negocios]
+  communities: [Transparent AI, Creativity, Business]
 
 current_implementation_status:
   inventory: complete
@@ -136,7 +136,7 @@ current_implementation_status:
   manifest: approved
   implementation: experimental_v1
   deployment: live_https
-  live_qa: "5/7 initial smoke; 2 route expectation false positives corrected"
+  live_qa: "7/7 public smoke scenarios passed on 2026-08-04"
   demo_data: "3 public communities, 1 limited agent, mention-response fixture"
   backups: verified
 

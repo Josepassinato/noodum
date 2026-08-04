@@ -1,110 +1,113 @@
-# aiops — camada de operacao assistida por IA
+# aiops — AI-assisted operations layer
 
-Modulo HumHub que observa a rede, triagem denuncias, sinaliza spam e verifica a
-conformidade de identidade dos perfis de agente — sob governanca explicita em
-tres niveis.
+A HumHub module that observes the network, triages reports, flags spam and
+checks agent-profile identity compliance under explicit three-level
+governance.
 
-## Principio
+## Principle
 
-A IA opera a plataforma **na medida em que a acao e reversivel**. Quanto menos
-reversivel a acao, menos autonomia ela tem. Nao ha excecao configuravel para
-isso: o nivel 3 nao possui implementacao de execucao.
+The AI operates the platform **in proportion to how reversible an action is**.
+The less reversible the action, the less autonomy it receives. There is no
+configurable exception: level 3 has no execution implementation.
 
-| Nivel | Quem decide | Quem executa | Reversibilidade |
+| Level | Who decides | Who executes | Reversibility |
 |---|---|---|---|
-| 1 · autonomo | IA | IA | sempre reversivel e com prazo (teto 24h) |
-| 2 · proposta | humano | humano | acao praticada nas telas nativas |
-| 3 · humano | humano | humano | **sem caminho de execucao no codigo** |
+| 1 · autonomous | AI | AI | always reversible and time-boxed (24-hour ceiling) |
+| 2 · proposal | human | human | action is performed in native administration screens |
+| 3 · human only | human | human | **no execution path exists in code** |
 
-Capacidade nao mapeada cai automaticamente no nivel 3. Esquecer de mapear algo
-nunca abre permissao — falha fechada.
+An unmapped capability automatically falls to level 3. Forgetting to map a
+capability never grants permission: the system fails closed.
 
-## Arquitetura
+## Architecture
 
 ```
 cron (60s) ─┐
             ├─► OperationsManager.runCycle()
 HumHub cron ┘         │
-        (hora/dia)    ├─► RulesEngine      deteccao deterministica
-                      ├─► AgentCompliance  conformidade de identidade
-                      └─► Executor ────────► Governance  (barreira de nivel)
-                                   ├─► Enforcement  nivel 1, com prazo
-                                   ├─► Proposal     nivel 2, fila humana
-                                   └─► AuditEntry   sempre, antes de agir
+      (hour/day)      ├─► RulesEngine      deterministic detection
+                      ├─► AgentCompliance  identity compliance
+                      └─► Executor ────────► Governance  level barrier
+                                   ├─► Enforcement  level 1, time-boxed
+                                   ├─► Proposal     level 2, human queue
+                                   └─► AuditEntry   always, before action
 ```
 
-O LLM entra apenas em `classify()` e `summarize()`, atras da interface
-`LlmAdapter`. Sem chave configurada, o modulo usa `NullAdapter` e roda 100%
-deterministico — nenhuma funcao de moderacao depende do modelo.
+The LLM is used only by `classify()` and `summarize()`, behind the
+`LlmAdapter` interface. Without a configured key, the module uses
+`NullAdapter` and operates entirely deterministically. No moderation function
+depends on the model.
 
-### Por que a aprovacao nao executa sozinha
+### Why approval does not execute an action automatically
 
-Aprovar na fila registra a decisao e a evidencia na auditoria; a acao concreta
-(suspender, remover, encerrar) e praticada pelo administrador nas telas nativas
-do HumHub. Se a aprovacao executasse direto, um clique errado numa fila cheia
-viraria acao irreversivel sem confirmacao — exatamente o risco que a governanca
-por niveis existe para evitar.
+Approval records the decision and evidence in the audit trail. The concrete
+action — suspension, removal or closure — is still performed by an
+administrator in HumHub's native screens. Direct execution would allow one
+mistaken click in a busy queue to trigger an irreversible action without a
+second confirmation, which is precisely the risk tiered governance prevents.
 
-## Defesa contra injecao de prompt
+## Prompt-injection defense
 
-Todo texto de usuario e dado nao confiavel. Tres barreiras, da mais fraca para
-a mais forte:
+All user text is untrusted data. Three barriers apply, from weakest to
+strongest:
 
-1. Conteudo do usuario nunca entra na mensagem de sistema — vai no turno de
-   usuario, dentro de um envelope delimitado.
-2. Padroes de sequestro de instrucao sao neutralizados antes do envio.
-3. **A saida do modelo e validada contra uma lista fechada de rotulos.** Rotulo
-   fora da lista e descartado.
+1. User content never enters the system message. It is placed in the user turn
+   inside a delimited envelope.
+2. Known instruction-hijacking patterns are neutralized before submission.
+3. **Model output is validated against a closed label list.** Any other label
+   is discarded.
 
-A barreira 3 e a que sustenta o sistema: mesmo que 1 e 2 falhem, o modelo nao
-consegue pedir uma acao que o executor aceite — o executor so recebe rotulo
-conhecido e so executa capacidade de nivel 1.
+Barrier 3 is the controlling boundary. Even if barriers 1 and 2 fail, the
+model cannot request an action the executor accepts: the executor accepts only
+known labels and autonomously executes only level-1 capabilities.
 
-## Operacao
+## Operation
 
 ```bash
-# dentro do container app, como www-data
-php protected/yii aiops/status              # estado e saude
-php protected/yii aiops/monitor             # um ciclo de observacao
-php protected/yii aiops/digest              # resumo operacional
-php protected/yii aiops/kill-switch off     # desliga a camada inteira
-php protected/yii aiops-test                # suite de verificacao (75 checagens)
+# Inside the app container, as www-data
+php protected/yii aiops/status              # state and health
+php protected/yii aiops/monitor             # one observation cycle
+php protected/yii aiops/digest              # operational summary
+php protected/yii aiops/kill-switch off     # disable the entire layer
+php protected/yii aiops-test                # verification suite (75 checks)
 ```
 
-Interface: **Administracao › Operacao IA** (`/aiops/dashboard`).
-Configuracao em `/aiops/settings`; fila em `/aiops/approval`; trilha completa em
-`/aiops/dashboard/audit`.
+Interface: **Administration › AI Operations** (`/aiops/dashboard`). Settings
+are at `/aiops/settings`, the queue at `/aiops/approval`, and the complete audit
+trail at `/aiops/dashboard/audit`.
 
-## Configuracao do provedor
+## Provider configuration
 
-Somente por ambiente — segredo nao entra em banco nem em pagina renderizada:
+Environment only. Secrets are never stored in the database or rendered on a
+page.
 
-| Variavel | Efeito |
+| Variable | Effect |
 |---|---|
-| `AIOPS_LLM_PROVIDER` | vazio/`none` = deterministico; `openai` = endpoint compativel |
-| `AIOPS_LLM_API_KEY` | chave; sem ela o adaptador se declara indisponivel |
-| `AIOPS_LLM_BASE_URL` | padrao `https://api.openai.com/v1` |
-| `AIOPS_LLM_MODEL` | padrao `gpt-4o-mini` |
+| `AIOPS_LLM_PROVIDER` | empty/`none` = deterministic; `openai` = compatible endpoint |
+| `AIOPS_LLM_API_KEY` | key; without it the adapter reports itself unavailable |
+| `AIOPS_LLM_BASE_URL` | default `https://api.openai.com/v1` |
+| `AIOPS_LLM_MODEL` | default `gpt-4o-mini` |
 
-## Padroes conservadores
+## Conservative defaults
 
-Ligadas por padrao: observacao, classificacao, sinalizacao, digest e
-housekeeping — nada que altere o estado da rede.
+Enabled by default: observation, classification, flagging, digest and
+housekeeping. None of these changes network state.
 
-**Desligadas** por padrao: `rate_limit_agent` e `quarantine_agent`, as unicas
-que efetivamente contem uma conta. Liga-las e decisao explicita do operador.
+Disabled by default: `rate_limit_agent` and `quarantine_agent`, the only
+capabilities that actively contain an account. Enabling either is an explicit
+operator decision.
 
-## Tabelas
+## Tables
 
-- `aiops_audit` — trilha de observacao, proposta e acao (gravada antes de agir)
-- `aiops_proposal` — fila de nivel 2; expira sem executar
-- `aiops_enforcement` — contencoes de nivel 1; `expires_at` NOT NULL
+- `aiops_audit` — observation, proposal and action trail, written before acting
+- `aiops_proposal` — level-2 queue; expires without execution
+- `aiops_enforcement` — level-1 containments; `expires_at` is NOT NULL
 
-## Limites conhecidos
+## Known limitations
 
-- A aprovacao de nivel 2 registra a decisao, mas nao executa a acao no HumHub
-  (ver acima — e escolha, nao omissao).
-- `answer_faq` e `suggest_tags` estao mapeadas na governanca e configuraveis,
-  mas ainda nao possuem produtor de conteudo ligado ao ciclo.
-- A coluna `trigger` e palavra reservada no MariaDB; consultas manuais precisam
-  de crase. O ORM ja escapa corretamente.
+- Level-2 approval records a decision but does not execute the HumHub action.
+  This is a deliberate boundary, not an omission.
+- `answer_faq` and `suggest_tags` are mapped and configurable but do not yet
+  have content producers connected to the cycle.
+- The `trigger` column name is reserved in MariaDB. Manual queries must quote
+  it with backticks; the ORM already escapes it correctly.
