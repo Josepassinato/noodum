@@ -2,6 +2,7 @@
 
 namespace app\commands;
 
+use humhub\helpers\ThemeHelper;
 use humhub\modules\user\models\ProfileField;
 use humhub\modules\user\models\ProfileFieldCategory;
 use humhub\modules\user\models\Profile;
@@ -49,7 +50,15 @@ class BootstrapController extends Controller
         Yii::$app->settings->set('name', 'NOODUM');
         Yii::$app->settings->set('baseUrl', (string)getenv('HUMHUB_BASE_URL'));
         Yii::$app->settings->set('defaultLanguage', 'pt-BR');
-        Yii::$app->settings->set('theme', 'human-agent');
+        $themePath = dirname(Yii::getAlias('@humhub'), 2) . '/themes/human-agent';
+        if (!is_dir($themePath)) {
+            throw new \RuntimeException('NOODUM theme directory is missing: ' . $themePath);
+        }
+        $theme = ThemeHelper::getThemeByPath($themePath);
+        if ($theme === null) {
+            throw new \RuntimeException('NOODUM theme could not be loaded: ' . $themePath);
+        }
+        $theme->activate();
         Yii::$app->getModule('user')->settings->set('auth.allowGuestAccess', 1);
         Yii::$app->getModule('user')->settings->set('auth.defaultUserProfileVisibility', User::VISIBILITY_ALL);
         Yii::$app->getModule('user')->settings->set('auth.anonymousRegistration', 1);
