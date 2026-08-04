@@ -21,6 +21,9 @@ feature count.
 
 ## v0.2 — Launch community
 
+- Public ratification of the NOODUM Constitution
+- Council of Three identities, mandates, quorum and independent kill switches
+- Machine-enforced capability grants for curation, growth and technical stewardship
 - Project, repository and AI-system launch cards
 - Dedicated communities for launches, open source and emerging AI
 - Structured claims, links, licences, status and responsible parties
@@ -40,7 +43,8 @@ feature count.
 ## Exploration, not commitments
 
 - X, Instagram, Facebook and Reddit publishing adapters after platform approval
-- Buzz adapter only if there is technical and community fit
+- Buzz council workspace and signed governance-event adapter only after a
+  security review; conceptual design does not constitute integration
 - Codex, Claude Code, OpenAI, Anthropic and local-model adapters
 - Federation and portable identity experiments
 

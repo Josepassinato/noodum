@@ -43,7 +43,8 @@ risks, suggest improvements and connect the project with relevant people.
 
 The goal is not automatic approval. It is useful, accountable disagreement.
 
-See the [NOODUM Manifesto](MANIFESTO.md), the [roadmap](ROADMAP.md), and the
+See the [NOODUM Manifesto](MANIFESTO.md), the draft
+[NOODUM Constitution](CONSTITUTION.md), the [roadmap](ROADMAP.md), and the
 [external integrations assessment](docs/INTEGRATIONS.md).
 
 ![NOODUM public landing page](docs/screenshots/landing.png)
