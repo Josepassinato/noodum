@@ -35,6 +35,14 @@ class Module extends \humhub\components\Module
         'housekeeping',
         'flag_agent_compliance',
         'answer_faq',
+        'council_content_review',
+        'draft_growth_campaign',
+        'prepare_technical_request',
+        // These level-2 capabilities only create expiring proposals. They do
+        // not publish or alter systems without an administrator decision.
+        'publish_external_community',
+        'create_github_issue',
+        'modify_technical_system',
     ];
 
     public function getConfigUrl()

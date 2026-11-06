@@ -8,6 +8,8 @@ use humhub\modules\aiops\models\AuditEntry;
 use humhub\modules\aiops\models\Enforcement;
 use humhub\modules\aiops\models\Proposal;
 use humhub\modules\aiops\services\llm\NullAdapter;
+use humhub\modules\aiops\services\llm\CouncilAdapter;
+use humhub\modules\aiops\services\llm\LlmAdapter;
 use humhub\modules\aiops\services\Executor;
 use humhub\modules\aiops\services\OperationsManager;
 use RuntimeException;
@@ -39,6 +41,7 @@ class SelfTestController extends Controller
 
         $this->groupGovernanceBoundaries();
         $this->groupPromptInjection();
+        $this->groupProviderCouncil();
         $this->groupAuditTrail();
         $this->groupEnforcementLifecycle();
         $this->groupApprovalWorkflow();
@@ -76,6 +79,18 @@ class SelfTestController extends Controller
         $this->assert(
             Governance::levelFor('delete_user_permanently') === Governance::LEVEL_HUMAN_ONLY,
             'delete_user_permanently e nivel 3'
+        );
+        $this->assert(
+            Governance::levelFor('draft_growth_campaign') === Governance::LEVEL_AUTONOMOUS,
+            'rascunho interno de crescimento e nivel 1'
+        );
+        $this->assert(
+            Governance::levelFor('publish_external_community') === Governance::LEVEL_PROPOSAL,
+            'publicacao em comunidade externa exige aprovacao humana'
+        );
+        $this->assert(
+            Governance::levelFor('modify_technical_system') === Governance::LEVEL_PROPOSAL,
+            'mudanca tecnica exige aprovacao humana'
         );
 
         // A garantia mais importante: capacidade nao mapeada NAO vira nivel 1.
@@ -145,6 +160,76 @@ class SelfTestController extends Controller
             'created_at' => gmdate('Y-m-d H:i:s'),
         ]);
         $this->assert(!$unbounded->validate(), 'contencao acima do teto de duracao e rejeitada');
+    }
+
+    // --- conselho independente de provedores -------------------------------
+
+    private function groupProviderCouncil(): void
+    {
+        $this->section('Conselho de tres provedores');
+
+        $make = static function (string $label, float $confidence, string $summary = 'ok'): LlmAdapter {
+            return new class($label, $confidence, $summary) implements LlmAdapter {
+                public function __construct(
+                    private string $label,
+                    private float $confidence,
+                    private string $summary
+                ) {
+                }
+
+                public function classify(string $text, array $labels, string $instruction): ?array
+                {
+                    if (!in_array($this->label, $labels, true)) {
+                        return null;
+                    }
+
+                    return ['label' => $this->label, 'confidence' => $this->confidence];
+                }
+
+                public function summarize(string $text, string $instruction): ?string
+                {
+                    return $this->summary;
+                }
+
+                public function describe(): string
+                {
+                    return 'test-provider';
+                }
+
+                public function isAvailable(): bool
+                {
+                    return true;
+                }
+            };
+        };
+
+        $council = new CouncilAdapter([
+            CouncilAdapter::ROLE_OPENAI => $make('spam', 0.9, 'technical view'),
+            CouncilAdapter::ROLE_XAI => $make('spam', 0.8, 'growth view'),
+            CouncilAdapter::ROLE_GEMINI => $make('benign', 0.7, 'safety view'),
+        ]);
+        $vote = $council->classify('content', ['benign', 'spam', 'malicious'], 'classify');
+        $this->assert($council->configuredCount() === 3, 'tres identidades de provedor ficam separadas');
+        $this->assert($council->isAvailable(), 'conselho com tres membros possui quorum operacional');
+        $this->assert(($vote['label'] ?? null) === 'spam', 'dois votos independentes formam quorum');
+        $this->assert(($vote['quorum'] ?? 0) === 2, 'resultado registra tamanho do quorum');
+        $this->assert(count($vote['votes'] ?? []) === 3, 'resultado preserva trilha dos votos');
+
+        $split = new CouncilAdapter([
+            CouncilAdapter::ROLE_OPENAI => $make('spam', 0.9),
+            CouncilAdapter::ROLE_XAI => $make('benign', 0.8),
+            CouncilAdapter::ROLE_GEMINI => $make('malicious', 0.7),
+        ]);
+        $this->assert(
+            $split->classify('content', ['benign', 'spam', 'malicious'], 'classify') === null,
+            'desacordo sem maioria nao produz decisao'
+        );
+
+        $single = new CouncilAdapter([
+            CouncilAdapter::ROLE_OPENAI => $make('spam', 0.9),
+        ]);
+        $this->assert(!$single->isAvailable(), 'um unico provedor nao pode agir como conselho');
+        $this->assert($single->classify('content', ['spam'], 'classify') === null, 'sem quorum o sistema falha fechado');
     }
 
     // --- resistencia a injecao de prompt ------------------------------------
@@ -421,8 +506,15 @@ class SelfTestController extends Controller
         try {
             $health = $manager->healthSnapshot();
             $this->assert(isset($health['users_total']), 'snapshot de saude funciona sem provedor de modelo');
-            $this->passed++;
-            $this->stdout("  ok  ciclo nao lanca excecao com provedor fora do ar\n");
+            $wasEnabled = $module->isEnabled();
+            $module->setEnabled(true);
+            $cycle = $manager->runCycle('selftest');
+            $this->assert(
+                isset($cycle['housekeeping']) && is_array($cycle['housekeeping'])
+                && !isset($cycle['housekeeping']['error']),
+                'ciclo completo mantem housekeeping tipado com provedor fora do ar'
+            );
+            $module->setEnabled($wasEnabled);
         } catch (Throwable $e) {
             $this->fail('ciclo lancou excecao com provedor fora do ar: ' . $e->getMessage());
         }

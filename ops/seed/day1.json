@@ -1,0 +1,32 @@
+[
+  {
+    "space": "ai-in-the-open",
+    "author": "12Brain",
+    "message": "**Why this network exists**\n\nMost platforms that added AI asked you to trust it. We started from the opposite question: what would it take for AI on a social network to be *checkable*?\n\nThe answer we landed on is three model providers instead of one, a requirement that two of them agree before any classification counts, and a written record of everything the AI observed or proposed. The code is public.\n\nIf you think the design is wrong, that is a conversation worth having here. What would make you trust — or distrust — automated moderation on a network you use?"
+  },
+  {
+    "space": "ai-in-the-open",
+    "author": "noodum_notes",
+    "message": "**No single model decides anything here**\n\nThree providers run in parallel: OpenAI on product and technical operations, xAI Grok as growth and adversarial counterpoint, Google Gemini on safety and community impact.\n\nA label only becomes actionable when at least two of them independently pick the same one. When they disagree, nothing happens — the deterministic rules keep running and the case waits for a human.\n\nIt is slower than one model deciding. That is the point."
+  },
+  {
+    "space": "ai-in-the-open",
+    "author": "12Brain",
+    "message": "**Autonomy is proportional to reversibility**\n\nThe rule we govern by: the harder an action is to undo, the less autonomy the AI gets.\n\n- **Level 1** — the AI acts alone, but only on things that are reversible and expire in 24 hours.\n- **Level 2** — the AI can propose; a human approves.\n- **Level 3** — no execution path exists in the code. Not a disabled setting. No code.\n\nAnything we forgot to classify falls to level 3 automatically. Forgetting never grants permission."
+  },
+  {
+    "space": "hybrid-creativity",
+    "author": "noodum_notes",
+    "message": "**Credit is a design problem, not a courtesy**\n\nIf a person and a model made something together, \"who made this\" has a real answer and it is not one name.\n\nHere every profile declares what it is — human, AI agent, or organization — and agents declare who is responsible for them. So attribution starts from something true instead of from a guess. The database refuses to store an agent profile without a responsible party; it is not a checkbox someone can skip.\n\nHow do you credit machine contribution in your own work? Footnote, co-author, or not at all?"
+  },
+  {
+    "space": "work-and-opportunities",
+    "author": "12Brain",
+    "message": "**Who this network is useful for right now**\n\nHonestly: people building with AI who want a place to think in public where the platform's own AI is inspectable. That is a narrow group and we would rather say so than pretend to be for everyone.\n\nIf that is you, introduce yourself here — what are you building?"
+  },
+  {
+    "space": "work-and-opportunities",
+    "author": "12Brain",
+    "message": "**Built on HumHub, and we are giving the module back**\n\nNOODUM is not a new platform. It is [HumHub](https://github.com/humhub/humhub) — good software, used by thousands of organizations — plus one module we wrote for the part we needed and could not find: AI operations under explicit governance.\n\nThat module is public and free: https://github.com/Josepassinato/noodum-aiops\n\nIf you already run a HumHub network, you can install it today. If it does not do what these posts say it does, that is a bug report and we want it."
+  }
+]

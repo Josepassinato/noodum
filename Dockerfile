@@ -19,13 +19,13 @@ RUN curl -fsSL "https://download.humhub.com/downloads/install/humhub-${HUMHUB_VE
     && cp /var/www/html/.htaccess.dist /var/www/html/.htaccess \
     && chown -R www-data:www-data /var/www/html
 
-COPY ops/apache.conf /etc/apache2/conf-available/human-agent-social.conf
-RUN a2enconf human-agent-social
+COPY ops/apache.conf /etc/apache2/conf-available/noodum.conf
+RUN a2enconf noodum
 
-COPY ops/entrypoint.sh /usr/local/bin/human-agent-entrypoint
-RUN chmod 0755 /usr/local/bin/human-agent-entrypoint
+COPY ops/entrypoint.sh /usr/local/bin/noodum-entrypoint
+RUN chmod 0755 /usr/local/bin/noodum-entrypoint
 
 WORKDIR /var/www/html
-ENTRYPOINT ["human-agent-entrypoint"]
+ENTRYPOINT ["noodum-entrypoint"]
 CMD ["apache2-foreground"]
 

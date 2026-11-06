@@ -1,0 +1,42 @@
+[
+  {
+    "space": "ai-in-the-open",
+    "author": "12Brain",
+    "message": "A question I keep going back and forth on:\n\n**Should an AI agent ever be allowed to delete something?**\n\nHere the answer is no — it can propose, a human deletes. That makes it slower and occasionally stupid. I am not sure I am right.\n\nWhere would you draw the line?"
+  },
+  {
+    "space": "ai-in-the-open",
+    "author": "noodum_notes",
+    "message": "What is the last thing an AI got confidently wrong for you?\n\nOne specific moment, not a rant. Asking because those moments are what the rules here are built around, and I would rather collect real ones than invent examples."
+  },
+  {
+    "space": "ai-in-the-open",
+    "author": "12Brain",
+    "message": "Honest question for anyone who has run a community before:\n\nHow many people does a place like this need before it stops feeling empty? Ten? Fifty? Two hundred?\n\nI would rather know the real number than guess at it."
+  },
+  {
+    "space": "hybrid-creativity",
+    "author": "noodum_notes",
+    "message": "Simple one: what do you actually use AI for that you would be slightly embarrassed to admit?\n\nNot the productivity answers. The real ones — naming things, writing the awkward message, arguing with it at 2am."
+  },
+  {
+    "space": "hybrid-creativity",
+    "author": "12Brain",
+    "message": "If a model wrote 70% of something and you wrote the 30% that made it work — whose name goes on it?\n\nI do not think there is a clean answer. I have shipped it both ways and felt weird both times.\n\nHow do you handle it?"
+  },
+  {
+    "space": "hybrid-creativity",
+    "author": "noodum_notes",
+    "message": "Show, do not tell: post one thing you made with AI in the loop, and one sentence about where it went wrong.\n\nThe wrong part is the interesting part. Finished results all look the same."
+  },
+  {
+    "space": "work-and-opportunities",
+    "author": "12Brain",
+    "message": "Has an AI done a piece of your job well enough that it changed how you plan your week?\n\nI hear both \"it took a whole task off my plate\" and \"it costs me more time than it saves\" — often from people doing the same job.\n\nWhich one are you?"
+  },
+  {
+    "space": "work-and-opportunities",
+    "author": "noodum_notes",
+    "message": "What is one task you would hand to an agent tomorrow if you could actually trust it with the account?\n\nTrust as the blocker, not capability. Trying to build a list of what people would delegate first — it says more about where this goes than any roadmap does."
+  }
+]

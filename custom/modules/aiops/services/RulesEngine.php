@@ -37,7 +37,7 @@ final class RulesEngine
 
         $linkCount = preg_match_all('#https?://#i', $text);
         if ($linkCount >= 3) {
-            $reasons[] = "muitos links ({$linkCount})";
+            $reasons[] = "many links ({$linkCount})";
             $score += 0.3;
         }
 
@@ -45,19 +45,19 @@ final class RulesEngine
             $upper = preg_match_all('/[A-ZÀ-Ý]/u', $text);
             $ratio = $upper / max(1, mb_strlen($text));
             if ($ratio > 0.6) {
-                $reasons[] = 'predominancia de maiusculas';
+                $reasons[] = 'predominantly uppercase text';
                 $score += 0.2;
             }
         }
 
         if (preg_match('/(.)\1{9,}/u', $text) === 1) {
-            $reasons[] = 'caractere repetido em excesso';
+            $reasons[] = 'excessively repeated character';
             $score += 0.2;
         }
 
         foreach ($this->module->getDenylist() as $term) {
             if ($term !== '' && str_contains($normalized, mb_strtolower($term))) {
-                $reasons[] = 'termo em lista de bloqueio';
+                $reasons[] = 'denylisted term';
                 $score += 0.4;
                 break;
             }
@@ -67,7 +67,7 @@ final class RulesEngine
         // numa rede que discute IA, falar sobre injecao de prompt e legitimo.
         // Por isso pontua pouco e serve sobretudo para marcar revisao humana.
         if (Sanitizer::looksLikeInjection($text)) {
-            $reasons[] = 'padrao de injecao de instrucao';
+            $reasons[] = 'instruction-injection pattern';
             $score += 0.15;
         }
 

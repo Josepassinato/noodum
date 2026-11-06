@@ -14,53 +14,53 @@ use yii\helpers\Url;
 /* @var $recentAudit \humhub\modules\aiops\models\AuditEntry[] */
 ?>
 <div class="panel panel-default">
-    <div class="panel-heading">Operacao assistida por IA</div>
+    <div class="panel-heading">AI-assisted operations</div>
     <div class="panel-body">
 
         <div class="alert <?= $module->isEnabled() ? 'alert-success' : 'alert-warning' ?>">
-            <strong>Camada de IA:
-                <?= $module->isEnabled() ? 'LIGADA' : 'DESLIGADA (kill switch)' ?></strong>
-            &nbsp;·&nbsp; Modelo: <?= Html::encode($health['llm']) ?>
+            <strong>AI layer:
+                <?= $module->isEnabled() ? 'ENABLED' : 'DISABLED (kill switch)' ?></strong>
+            &nbsp;·&nbsp; Model: <?= Html::encode($health['llm']) ?>
             <?php if (!$health['llm_available']): ?>
-                <br><small>Sem provedor de modelo configurado — a camada roda apenas com regras
-                    deterministicas. Moderacao e governanca continuam valendo integralmente.</small>
+                <br><small>The provider council has no operational quorum — the layer runs with
+                    deterministic rules only. Moderation and governance remain fully enforced.</small>
             <?php endif; ?>
-            <a class="btn btn-default btn-xs pull-right" href="<?= Url::to(['/aiops/settings']) ?>">Configurar</a>
+            <a class="btn btn-default btn-xs pull-right" href="<?= Url::to(['/aiops/settings']) ?>">Configure</a>
         </div>
 
-        <h4>Saude da plataforma</h4>
+        <h4>Platform health</h4>
         <table class="table table-condensed">
             <tr>
-                <td>Usuarios ativos</td><td><strong><?= (int)$health['users_total'] ?></strong></td>
-                <td>Publicacoes (24h)</td><td><strong><?= (int)$health['content_24h'] ?></strong></td>
-                <td>Comunidades</td><td><strong><?= (int)$health['spaces_total'] ?></strong></td>
+                <td>Active users</td><td><strong><?= (int)$health['users_total'] ?></strong></td>
+                <td>Publications (24h)</td><td><strong><?= (int)$health['content_24h'] ?></strong></td>
+                <td>Communities</td><td><strong><?= (int)$health['spaces_total'] ?></strong></td>
             </tr>
             <tr>
-                <td>Denuncias abertas</td><td><strong><?= (int)$health['reports_open'] ?></strong></td>
-                <td>Contencoes ativas</td><td><strong><?= (int)$health['enforcements_active'] ?></strong></td>
-                <td>Eventos auditados (24h)</td><td><strong><?= (int)$health['audit_24h'] ?></strong></td>
+                <td>Open reports</td><td><strong><?= (int)$health['reports_open'] ?></strong></td>
+                <td>Active enforcements</td><td><strong><?= (int)$health['enforcements_active'] ?></strong></td>
+                <td>Audited events (24h)</td><td><strong><?= (int)$health['audit_24h'] ?></strong></td>
             </tr>
         </table>
 
-        <h4>Conformidade de identidade dos perfis</h4>
+        <h4>Profile identity compliance</h4>
         <p>
             <span class="label label-<?= $compliance['actionable'] > 0 ? 'danger' : 'success' ?>">
-                <?= (int)$compliance['actionable'] ?> acionaveis
+                <?= (int)$compliance['actionable'] ?> actionable
             </span>
-            <span class="label label-warning"><?= (int)$compliance['in_grace'] ?> em carencia</span>
-            <span class="label label-default"><?= (int)$compliance['total_issues'] ?> pendencias no total</span>
+            <span class="label label-warning"><?= (int)$compliance['in_grace'] ?> in grace period</span>
+            <span class="label label-default"><?= (int)$compliance['total_issues'] ?> total issues</span>
         </p>
 
-        <h4>Fila de aprovacao humana — nivel 2
+        <h4>Human approval queue — level 2
             <?php if ($pendingCount > 0): ?>
-                <span class="label label-warning"><?= (int)$pendingCount ?> pendentes</span>
+                <span class="label label-warning"><?= (int)$pendingCount ?> pending</span>
             <?php endif; ?>
         </h4>
         <?php if ($pending === []): ?>
-            <p class="text-muted">Nenhuma proposta aguardando decisao.</p>
+            <p class="text-muted">No proposals are awaiting a decision.</p>
         <?php else: ?>
             <table class="table table-condensed table-hover">
-                <thead><tr><th>Capacidade</th><th>Motivo</th><th>Confianca</th><th>Expira</th><th></th></tr></thead>
+                <thead><tr><th>Capability</th><th>Reason</th><th>Confidence</th><th>Expires</th><th></th></tr></thead>
                 <tbody>
                 <?php foreach ($pending as $p): ?>
                     <tr>
@@ -69,20 +69,20 @@ use yii\helpers\Url;
                         <td><?= $p->confidence !== null ? round((float)$p->confidence * 100) . '%' : '—' ?></td>
                         <td><small><?= Html::encode($p->expires_at) ?></small></td>
                         <td><a class="btn btn-xs btn-primary"
-                               href="<?= Url::to(['/aiops/approval/view', 'id' => $p->id]) ?>">Revisar</a></td>
+                               href="<?= Url::to(['/aiops/approval/view', 'id' => $p->id]) ?>">Review</a></td>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>
             </table>
-            <a href="<?= Url::to(['/aiops/approval']) ?>">Ver fila completa</a>
+            <a href="<?= Url::to(['/aiops/approval']) ?>">View full queue</a>
         <?php endif; ?>
 
-        <h4>Contencoes ativas — nivel 1 (temporarias e reversiveis)</h4>
+        <h4>Active enforcements — level 1 (temporary and reversible)</h4>
         <?php if ($enforcements === []): ?>
-            <p class="text-muted">Nenhuma contencao ativa.</p>
+            <p class="text-muted">No active enforcements.</p>
         <?php else: ?>
             <table class="table table-condensed">
-                <thead><tr><th>Capacidade</th><th>Alvo</th><th>Motivo</th><th>Expira</th><th></th></tr></thead>
+                <thead><tr><th>Capability</th><th>Subject</th><th>Reason</th><th>Expires</th><th></th></tr></thead>
                 <tbody>
                 <?php foreach ($enforcements as $e): ?>
                     <tr>
@@ -92,7 +92,7 @@ use yii\helpers\Url;
                         <td><small><?= Html::encode($e->expires_at) ?></small></td>
                         <td>
                             <?= Html::beginForm(Url::to(['/aiops/dashboard/revert', 'id' => $e->id]), 'post') ?>
-                            <button type="submit" class="btn btn-xs btn-default">Reverter agora</button>
+                            <button type="submit" class="btn btn-xs btn-default">Revert now</button>
                             <?= Html::endForm() ?>
                         </td>
                     </tr>
@@ -101,15 +101,15 @@ use yii\helpers\Url;
             </table>
         <?php endif; ?>
 
-        <h4>Resumo operacional</h4>
+        <h4>Operational summary</h4>
         <pre style="white-space:pre-wrap"><?= Html::encode((new humhub\modules\aiops\services\Digest(
             $module,
             new humhub\modules\aiops\services\OperationsManager($module)
         ))->render($digest)) ?></pre>
 
-        <h4>Trilha de auditoria — ultimos eventos</h4>
+        <h4>Audit trail — latest events</h4>
         <table class="table table-condensed">
-            <thead><tr><th>Quando</th><th>Ator</th><th>Nivel</th><th>Capacidade</th><th>Acao</th><th>Resultado</th></tr></thead>
+            <thead><tr><th>When</th><th>Actor</th><th>Level</th><th>Capability</th><th>Action</th><th>Result</th></tr></thead>
             <tbody>
             <?php foreach ($recentAudit as $a): ?>
                 <tr>
@@ -126,6 +126,6 @@ use yii\helpers\Url;
             <?php endforeach; ?>
             </tbody>
         </table>
-        <a href="<?= Url::to(['/aiops/dashboard/audit']) ?>">Ver trilha completa</a>
+        <a href="<?= Url::to(['/aiops/dashboard/audit']) ?>">View full audit trail</a>
     </div>
 </div>

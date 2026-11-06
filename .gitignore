@@ -1,7 +1,12 @@
 .env
 .env.*
 !.env.example
-releases/
+compose.override.yml
+compose.override.yml.*
+releases/*.tar.gz
+releases/*.sql.gz
+backups/
+qa/reports/
 uploads/
 protected/runtime/
 protected/config/dynamic.php

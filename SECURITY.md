@@ -26,7 +26,9 @@ In scope:
   not merely a wrong classification.
 - Audit trail tampering or omission.
 - Containment that does not expire, or that cannot be reverted.
-- Secret leakage into logs, rendered pages or the database.
+- Secret leakage into logs, rendered pages, the database, or git history.
+- The optional Telegram webhook accepting a caller that is not on the
+  allowlist, or accepting a request whose secret header does not match.
 
 Out of scope:
 

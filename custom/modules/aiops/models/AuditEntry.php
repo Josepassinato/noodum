@@ -80,7 +80,7 @@ class AuditEntry extends ActiveRecord
         $entry->created_at = gmdate('Y-m-d H:i:s');
 
         if (!$entry->save()) {
-            Yii::error('aiops: falha ao gravar auditoria: ' . json_encode($entry->getErrors()), 'aiops');
+            Yii::error('aiops: failed to record audit entry: ' . json_encode($entry->getErrors()), 'aiops');
         }
 
         return $entry;

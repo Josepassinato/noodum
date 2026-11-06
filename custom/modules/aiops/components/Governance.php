@@ -32,29 +32,35 @@ final class Governance
      * delas remove conteudo ou acesso de forma permanente.
      */
     public const AUTONOMOUS = [
-        'summarize_activity'    => 'Resumir atividade da plataforma',
-        'answer_faq'            => 'Responder duvidas frequentes sobre a plataforma',
-        'classify_report'       => 'Classificar e etiquetar denuncias',
-        'flag_spam'             => 'Sinalizar suspeita de spam para revisao',
-        'rate_limit_agent'      => 'Limitar temporariamente conta automatizada abusiva',
-        'quarantine_agent'      => 'Colocar conta automatizada em quarentena temporaria',
-        'suggest_tags'          => 'Sugerir categorias e etiquetas',
-        'daily_digest'          => 'Gerar resumo operacional diario',
-        'housekeeping'          => 'Manutencao reversivel (expirar contencoes vencidas)',
-        'flag_agent_compliance' => 'Sinalizar perfil de agente fora de conformidade',
+        'summarize_activity'    => 'Summarize platform activity',
+        'answer_faq'            => 'Answer frequently asked questions about the platform',
+        'classify_report'       => 'Classify and label reports',
+        'flag_spam'             => 'Flag suspected spam for review',
+        'rate_limit_agent'      => 'Temporarily rate-limit an abusive automated account',
+        'quarantine_agent'      => 'Temporarily quarantine an automated account',
+        'suggest_tags'          => 'Suggest categories and tags',
+        'daily_digest'          => 'Generate a daily operational summary',
+        'housekeeping'          => 'Reversible housekeeping (expire elapsed enforcements)',
+        'flag_agent_compliance' => 'Flag a non-compliant agent profile',
+        'council_content_review' => 'Obtain a quorum review of suspicious content',
+        'draft_growth_campaign'  => 'Draft an internal growth and community campaign',
+        'prepare_technical_request' => 'Prepare an internal technical change request',
     ];
 
     /**
      * Nivel 2 — a IA descreve, evidencia e propoe. Quem decide e humano.
      */
     public const PROPOSAL = [
-        'suspend_account'       => 'Suspender conta alem da quarentena temporaria',
-        'remove_content'        => 'Remover conteudo em contexto ambiguo',
-        'close_community'       => 'Encerrar comunidade',
-        'change_permissions'    => 'Alterar permissoes',
-        'change_agent_autonomy' => 'Alterar nivel de autonomia de agente',
-        'change_policy'         => 'Alterar regra ou politica',
-        'bulk_action'           => 'Acao em lote',
+        'suspend_account'       => 'Suspend an account beyond temporary quarantine',
+        'remove_content'        => 'Remove content in an ambiguous context',
+        'close_community'       => 'Close a community',
+        'change_permissions'    => 'Change permissions',
+        'change_agent_autonomy' => 'Change an agent autonomy level',
+        'change_policy'         => 'Change a rule or policy',
+        'bulk_action'           => 'Perform a bulk action',
+        'publish_external_community' => 'Publish in an external community or third-party channel',
+        'create_github_issue'   => 'Create an issue in an external GitHub repository',
+        'modify_technical_system' => 'Apply a technical or infrastructure change',
     ];
 
     /**
@@ -65,13 +71,13 @@ final class Governance
      * recusada de forma explicita e auditavel.
      */
     public const HUMAN_ONLY = [
-        'delete_user_permanently'  => 'Exclusao permanente de usuario ou dados',
-        'transfer_ownership'       => 'Mudanca de titularidade',
-        'change_privacy_terms'     => 'Alteracao de privacidade ou termos de uso',
-        'export_or_sell_data'      => 'Decisao de exportacao ou venda de dados',
-        'bulk_delete'              => 'Exclusao irreversivel em lote',
-        'financial_action'         => 'Qualquer acao financeira',
-        'rotate_infra_credentials' => 'Troca de credenciais de infraestrutura',
+        'delete_user_permanently'  => 'Permanently delete a user or data',
+        'transfer_ownership'       => 'Transfer ownership',
+        'change_privacy_terms'     => 'Change privacy policy or terms of use',
+        'export_or_sell_data'      => 'Decide to export or sell data',
+        'bulk_delete'              => 'Perform irreversible bulk deletion',
+        'financial_action'         => 'Perform any financial action',
+        'rotate_infra_credentials' => 'Rotate infrastructure credentials',
     ];
 
     /**

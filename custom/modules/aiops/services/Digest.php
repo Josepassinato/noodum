@@ -28,7 +28,7 @@ final class Digest
         $since = gmdate('Y-m-d H:i:s', time() - 86400);
 
         $facts = [
-            'period' => 'ultimas 24h',
+            'period' => 'last 24h',
             'generated_at' => gmdate('Y-m-d H:i:s'),
             'health' => $this->manager->healthSnapshot(),
             'autonomous_actions' => AuditEntry::find()
@@ -70,21 +70,21 @@ final class Digest
         }
 
         $payload = json_encode([
-            'saude' => $facts['health'],
-            'acoes_autonomas' => $facts['autonomous_actions'],
-            'observacoes' => $facts['observations'],
-            'tentativas_bloqueadas' => $facts['blocked_attempts'],
-            'reversoes' => $facts['reversals'],
-            'propostas_pendentes' => $facts['proposals_pending'],
-            'contencoes_ativas' => $facts['enforcements_active'],
-            'conformidade_agentes' => $facts['agent_compliance'],
+            'health' => $facts['health'],
+            'autonomous_actions' => $facts['autonomous_actions'],
+            'observations' => $facts['observations'],
+            'blocked_attempts' => $facts['blocked_attempts'],
+            'reversals' => $facts['reversals'],
+            'pending_proposals' => $facts['proposals_pending'],
+            'active_enforcements' => $facts['enforcements_active'],
+            'agent_compliance' => $facts['agent_compliance'],
         ], JSON_UNESCAPED_UNICODE);
 
         return $llm->summarize(
             $payload,
-            'Voce escreve um resumo operacional curto (maximo 5 frases) para o administrador '
-            . 'de uma rede social de humanos e agentes de IA. Use apenas os numeros fornecidos. '
-            . 'Nao invente dados. Nao sugira acoes irreversiveis. Escreva em portugues do Brasil.'
+            'Write a short operational summary (maximum 5 sentences) for the administrator '
+            . 'of a social network for humans and AI agents. Use only the supplied numbers. '
+            . 'Do not invent data or suggest irreversible actions. Write in English.'
         );
     }
 
@@ -95,13 +95,13 @@ final class Digest
         $c = $digest['agent_compliance'];
 
         $lines = [
-            '=== Digest operacional — ' . $digest['generated_at'] . ' UTC (' . $digest['period'] . ') ===',
-            sprintf('Rede:        %d usuarios | %d publicacoes/24h | %d comunidades', $h['users_total'], $h['content_24h'], $h['spaces_total']),
-            sprintf('Moderacao:   %d denuncias abertas | %d contencoes ativas', $h['reports_open'], $digest['enforcements_active']),
-            sprintf('IA:          %d acoes autonomas | %d observacoes | %d reversoes', $digest['autonomous_actions'], $digest['observations'], $digest['reversals']),
-            sprintf('Governanca:  %d propostas pendentes | %d criadas | %d tentativas bloqueadas', $digest['proposals_pending'], $digest['proposals_created'], $digest['blocked_attempts']),
-            sprintf('Conformidade: %d perfis com pendencia (%d em carencia, %d acionaveis)', $c['total_issues'], $c['in_grace'], $c['actionable']),
-            'Modelo:      ' . $h['llm'],
+            '=== Operational digest — ' . $digest['generated_at'] . ' UTC (' . $digest['period'] . ') ===',
+            sprintf('Network:     %d users | %d publications/24h | %d communities', $h['users_total'], $h['content_24h'], $h['spaces_total']),
+            sprintf('Moderation:  %d open reports | %d active enforcements', $h['reports_open'], $digest['enforcements_active']),
+            sprintf('AI:          %d autonomous actions | %d observations | %d reversals', $digest['autonomous_actions'], $digest['observations'], $digest['reversals']),
+            sprintf('Governance:  %d pending proposals | %d created | %d blocked attempts', $digest['proposals_pending'], $digest['proposals_created'], $digest['blocked_attempts']),
+            sprintf('Compliance:  %d profiles with issues (%d in grace period, %d actionable)', $c['total_issues'], $c['in_grace'], $c['actionable']),
+            'Model:       ' . $h['llm'],
         ];
 
         if (!empty($digest['narrative'])) {

@@ -55,7 +55,7 @@ class Enforcement extends ActiveRecord
     public function validateAutonomous($attribute): void
     {
         if (!Governance::isAutonomous((string)$this->$attribute)) {
-            $this->addError($attribute, 'Contencao autonoma exige capacidade de nivel 1.');
+            $this->addError($attribute, 'Autonomous enforcement requires a level 1 capability.');
         }
     }
 
@@ -64,11 +64,11 @@ class Enforcement extends ActiveRecord
     {
         $expiry = strtotime((string)$this->$attribute);
         if ($expiry === false) {
-            $this->addError($attribute, 'Prazo invalido.');
+            $this->addError($attribute, 'Invalid expiration time.');
             return;
         }
         if ($expiry > time() + Governance::MAX_ENFORCEMENT_SECONDS) {
-            $this->addError($attribute, 'Prazo excede o teto de ' . Governance::MAX_ENFORCEMENT_SECONDS . 's.');
+            $this->addError($attribute, 'Expiration exceeds the ' . Governance::MAX_ENFORCEMENT_SECONDS . 's ceiling.');
         }
     }
 
