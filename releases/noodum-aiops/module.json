@@ -1,0 +1,10 @@
+{
+  "id": "aiops",
+  "name": "AI Operations",
+  "description": "AI-assisted operations layer: observation, triage, human-approved proposals and an audit trail.",
+  "keywords": ["moderation", "governance", "audit", "automation", "ai"],
+  "version": "0.1.0",
+  "authors": [{ "name": "12Brain Solutions" }],
+  "license": "AGPL-3.0-or-later",
+  "humhub": { "minVersion": "1.18" }
+}

@@ -5,6 +5,7 @@ namespace humhub\modules\aiops;
 use humhub\modules\aiops\models\Proposal;
 use humhub\modules\aiops\services\Digest;
 use humhub\modules\aiops\services\OperationsManager;
+use humhub\modules\aiops\services\TelegramGateway;
 use Throwable;
 use Yii;
 use yii\helpers\Url;
@@ -36,7 +37,9 @@ class Events
             }
             $manager = new OperationsManager($module);
             $digest = new Digest($module, $manager);
-            Yii::info("aiops digest\n" . $digest->render($digest->build()), 'aiops');
+            $rendered = $digest->render($digest->build());
+            Yii::info("aiops digest\n" . $rendered, 'aiops');
+            TelegramGateway::fromEnvironment()->sendToOwners($rendered);
         }, 'onDailyCron');
     }
 

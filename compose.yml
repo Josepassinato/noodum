@@ -1,5 +1,6 @@
-# This Compose file is intended for local/demo use. It publishes only on
-# loopback and does not provide TLS. Use a reverse proxy for public deployment.
+# Local and demo Compose file. It publishes only on loopback and does not
+# provide TLS. Put a reverse proxy in front for any public deployment.
+# See ops/nginx.conf.
 services:
   app:
     build:
@@ -16,6 +17,7 @@ services:
       HUMHUB_DB_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in .env}
       HUMHUB_SITE_NAME: ${SITE_NAME}
       HUMHUB_SITE_EMAIL: ${SITE_EMAIL}
+      HUMHUB_MAIL_FROM_NAME: ${HUMHUB_MAIL_FROM_NAME:-NOODUM}
       HUMHUB_ADMIN_USER: ${ADMIN_USER}
       HUMHUB_ADMIN_EMAIL: ${ADMIN_EMAIL}
       HUMHUB_ADMIN_PASSWORD: ${ADMIN_PASSWORD:?set ADMIN_PASSWORD in .env}
@@ -34,12 +36,20 @@ services:
       AIOPS_LLM_API_KEY: ${AIOPS_LLM_API_KEY:-}
       AIOPS_LLM_BASE_URL: ${AIOPS_LLM_BASE_URL:-}
       AIOPS_LLM_MODEL: ${AIOPS_LLM_MODEL:-}
+      NOODUM_TELEGRAM_ENABLED: ${NOODUM_TELEGRAM_ENABLED:-false}
+      NOODUM_TELEGRAM_BOT_TOKEN: ${NOODUM_TELEGRAM_BOT_TOKEN:-}
+      NOODUM_TELEGRAM_WEBHOOK_SECRET: ${NOODUM_TELEGRAM_WEBHOOK_SECRET:-}
+      NOODUM_TELEGRAM_ALLOWED_CHAT_IDS: ${NOODUM_TELEGRAM_ALLOWED_CHAT_IDS:-}
+      NOODUM_TELEGRAM_WEBHOOK_URL: ${NOODUM_TELEGRAM_WEBHOOK_URL:-}
+      NOODUM_SEED_USERNAMES: ${NOODUM_SEED_USERNAMES:-12Brain,noodum_notes,demo_agent}
     volumes:
       - humhub_config:/var/www/html/protected/config
       - humhub_uploads:/var/www/html/uploads
       - humhub_modules:/var/www/html/protected/modules
       - humhub_runtime:/var/www/html/protected/runtime
       - ./custom/theme:/var/www/html/themes/human-agent:ro
+      - ./ops/php-uploads.ini:/usr/local/etc/php/conf.d/zz-noodum-uploads.ini:ro
+      - ./ops/seed:/var/www/html/protected/seed:ro
       - ./ops/console.php:/var/www/html/protected/config/console.php
       - ./ops/common.php:/var/www/html/protected/config/common.php:ro
       - ./ops/BootstrapController.php:/var/www/html/protected/commands/BootstrapController.php:ro
@@ -81,7 +91,10 @@ services:
         HUMHUB_VERSION: "1.18.4"
     restart: unless-stopped
     entrypoint: ["/bin/sh", "-c"]
-    command: ["while true; do su -s /bin/sh www-data -c 'php /var/www/html/protected/yii cron/run' || true; su -s /bin/sh www-data -c 'php /var/www/html/protected/yii aiops/monitor' >/dev/null 2>&1 || true; sleep 60; done"]
+    # queue/run drains mail and notification jobs. Without it HumHub enqueues
+    # work that is never delivered. --isolate=0 stays in-process because this
+    # image has no Yii re-exec binary. --verbose=0 keeps the minute log quiet.
+    command: ["while true; do su -s /bin/sh www-data -c 'php /var/www/html/protected/yii cron/run' || true; su -s /bin/sh www-data -c 'php /var/www/html/protected/yii queue/run --isolate=0 --verbose=0' || true; su -s /bin/sh www-data -c 'php /var/www/html/protected/yii aiops/monitor' >/dev/null 2>&1 || true; sleep 60; done"]
     environment:
       HUMHUB_DB_HOST: db
       HUMHUB_DB_NAME: ${DB_NAME}
@@ -89,6 +102,7 @@ services:
       HUMHUB_DB_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in .env}
       HUMHUB_SITE_NAME: ${SITE_NAME}
       HUMHUB_SITE_EMAIL: ${SITE_EMAIL}
+      HUMHUB_MAIL_FROM_NAME: ${HUMHUB_MAIL_FROM_NAME:-NOODUM}
       SMTP_DSN: ${SMTP_DSN:-}
       AIOPS_OPENAI_API_KEY: ${AIOPS_OPENAI_API_KEY:-}
       AIOPS_OPENAI_MODEL: ${AIOPS_OPENAI_MODEL:-}
@@ -99,6 +113,11 @@ services:
       AIOPS_GEMINI_API_KEY: ${AIOPS_GEMINI_API_KEY:-}
       AIOPS_GEMINI_MODEL: ${AIOPS_GEMINI_MODEL:-}
       AIOPS_GEMINI_BASE_URL: ${AIOPS_GEMINI_BASE_URL:-}
+      NOODUM_TELEGRAM_ENABLED: ${NOODUM_TELEGRAM_ENABLED:-false}
+      NOODUM_TELEGRAM_BOT_TOKEN: ${NOODUM_TELEGRAM_BOT_TOKEN:-}
+      NOODUM_TELEGRAM_WEBHOOK_SECRET: ${NOODUM_TELEGRAM_WEBHOOK_SECRET:-}
+      NOODUM_TELEGRAM_ALLOWED_CHAT_IDS: ${NOODUM_TELEGRAM_ALLOWED_CHAT_IDS:-}
+      NOODUM_TELEGRAM_WEBHOOK_URL: ${NOODUM_TELEGRAM_WEBHOOK_URL:-}
     volumes:
       - humhub_config:/var/www/html/protected/config
       - humhub_uploads:/var/www/html/uploads
@@ -122,13 +141,19 @@ services:
         HUMHUB_VERSION: "1.18.4"
     restart: unless-stopped
     entrypoint: ["/bin/sh", "-c"]
-    command: ["while true; do php /var/www/html/protected/yii human-agent-bootstrap/respond || true; sleep 30; done"]
+    # Run as www-data. A root loop writes root-owned files into the shared
+    # runtime volume, and Apache can then no longer write the captcha cache.
+    # cover-unanswered posts an acknowledgement only when COVER_ENABLED=true.
+    command: ["while true; do su -s /bin/sh www-data -c 'php /var/www/html/protected/yii human-agent-bootstrap/respond' || true; su -s /bin/sh www-data -c 'php /var/www/html/protected/yii human-agent-bootstrap/cover-unanswered' || true; sleep 30; done"]
     environment:
       HUMHUB_DB_HOST: db
       HUMHUB_DB_NAME: ${DB_NAME}
       HUMHUB_DB_USER: ${DB_USER}
       HUMHUB_DB_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in .env}
       AGENT_ENABLED: ${AGENT_ENABLED:-false}
+      COVER_ENABLED: ${COVER_ENABLED:-false}
+      NOODUM_OPERATOR_NAME: ${NOODUM_OPERATOR_NAME:-}
+      NOODUM_COVER_ACK: ${NOODUM_COVER_ACK:-}
     volumes:
       - humhub_config:/var/www/html/protected/config
       - humhub_uploads:/var/www/html/uploads

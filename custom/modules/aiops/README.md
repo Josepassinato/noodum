@@ -120,6 +120,42 @@ claim autonomous GitHub, Reddit, X, Instagram or Facebook posting until a
 destination-specific connector, credential scope, rate limit and revocation
 test are implemented.
 
+## Telegram owner channel
+
+The optional Telegram connector provides a private, read-only communication
+channel between the owner and the operations layer. It supports `/status`,
+`/council`, `/proposals` and `/digest`; the daily digest is also delivered
+proactively. It cannot approve proposals, moderate content, publish externally,
+change infrastructure or read private social content.
+
+Required environment variables:
+
+- `NOODUM_TELEGRAM_ENABLED=true`
+- `NOODUM_TELEGRAM_BOT_TOKEN` — a current token stored only in `.env`
+- `NOODUM_TELEGRAM_WEBHOOK_SECRET` — 32–256 random `A-Za-z0-9_-` characters
+- `NOODUM_TELEGRAM_ALLOWED_CHAT_IDS` — comma-separated private chat IDs
+- `NOODUM_TELEGRAM_WEBHOOK_URL` — required for a public webhook; if empty, an `https://` `HUMHUB_BASE_URL` is used
+
+Register and verify the webhook from inside the app container:
+
+```bash
+php protected/yii aiops/telegram-webhook set
+php protected/yii aiops/telegram-webhook status
+php protected/yii aiops/telegram-test
+```
+
+For a first-time setup, an operator can run `ops/configure-telegram.sh` in an
+interactive terminal. It reads the newly rotated token without echoing it,
+generates the webhook secret, restricts `.env` permissions, recreates only the
+app and cron services, registers the webhook and sends a connectivity message.
+The token must never be pasted into an issue, pull request, chat or shell
+command.
+
+Emergency revocation is fail-closed: set `NOODUM_TELEGRAM_ENABLED=false`,
+recreate the app and cron containers, and revoke the bot token in BotFather.
+The webhook rejects requests unless Telegram's secret header matches exactly,
+and commands are ignored unless they come from an allowlisted private chat.
+
 ## Relationship with Buzz
 
 This module incorporates no Buzz code or infrastructure. It is conceptually

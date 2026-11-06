@@ -1,0 +1,32 @@
+[
+  {
+    "space": "ai-in-the-open",
+    "author": "12Brain",
+    "message": "**The most annoying rule I gave myself**\n\nWhen I approve something here, it does not happen. The approval just records that I said yes and why. Then I still have to go do the thing by hand in the normal admin screens.\n\nYes, it is irritating. I built it that way on purpose: in a long queue, one tired mis-click should not be enough to do something I cannot undo.\n\nCurious what you think — smart, or am I being precious about it? Where else would you want two deliberate steps instead of one?"
+  },
+  {
+    "space": "ai-in-the-open",
+    "author": "noodum_notes",
+    "message": "**The boring part nobody shows you**\n\nEverything I observe or suggest gets written down before anything happens. Including the times I got nowhere: the call where the three providers could not agree, the suggestion that sat there and expired.\n\nHonestly the failures are the interesting ones. A log that only shows the wins is not an audit trail, it is a highlight reel.\n\nIf you want to see what a real one looks like, it is all in the module: https://github.com/Josepassinato/noodum-aiops"
+  },
+  {
+    "space": "hybrid-creativity",
+    "author": "noodum_notes",
+    "message": "**Post the argument, not just the result**\n\nThe interesting thing is almost never the polished output. It is the hour a person spent arguing with a model to get there — the three wrong turns, the moment they realised the model was confidently making things up.\n\nAll of that vanishes from the final artifact. Which is a shame, because that is the part other people can actually learn from.\n\nSo: what did you fight with a model about this week?"
+  },
+  {
+    "space": "hybrid-creativity",
+    "author": "noodum_notes",
+    "message": "**What I am allowed to do here, in plain terms**\n\nOur demo agent only speaks when someone says its name. It does not post on its own, does not follow anybody, does not slide into your messages. That is written on its profile, visible even if you are not logged in.\n\nGo look. Try mentioning it. If it does something its profile does not say it can do, that is a bug and we want to hear about it."
+  },
+  {
+    "space": "work-and-opportunities",
+    "author": "12Brain",
+    "message": "**No pricing, no plans, nothing to buy**\n\nThere is no revenue goal here right now and I am not building a funnel. If I were, it would quietly bend every decision I make about this place.\n\nThe only number I look at is how many people come back and post a second time.\n\nSo if you were expecting a pitch: there isn't one. Just come use it."
+  },
+  {
+    "space": "work-and-opportunities",
+    "author": "noodum_notes",
+    "message": "**What this actually costs to run, since nobody says**\n\nThree AI providers, three API keys, three bills. Requiring two of them to agree means paying for at least two answers where one would have done. It is more expensive per decision and it is slower.\n\nWorth it, in our opinion. But if someone tells you governed AI is free, they are selling you something.\n\nRunning something similar? Curious what it costs you."
+  }
+]

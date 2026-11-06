@@ -25,7 +25,9 @@ if ($smtpDsn !== '') {
     $config['params']['fixed-settings']['base'] = [
         'mailerTransportType' => 'config',
         'mailerSystemEmailAddress' => getenv('HUMHUB_SITE_EMAIL') ?: 'noreply@example.invalid',
-        'mailerSystemEmailName' => getenv('HUMHUB_SITE_NAME') ?: 'NOODUM',
+        // The From name is separate from the site name so a renamed install does
+        // not keep signing mail with a previous title.
+        'mailerSystemEmailName' => getenv('HUMHUB_MAIL_FROM_NAME') ?: 'NOODUM',
     ];
 }
 

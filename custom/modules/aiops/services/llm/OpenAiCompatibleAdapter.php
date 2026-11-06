@@ -24,12 +24,19 @@ final class OpenAiCompatibleAdapter implements LlmAdapter
     private string $model;
     private int $timeout;
 
+    /**
+     * @param int $summaryTokens teto de tokens para summarize(). O default de 600
+     *   serve classificacao e digest. Modelos com raciocinio interno (Gemini 3.x,
+     *   por exemplo) gastam esse mesmo teto pensando e devolvem a resposta
+     *   truncada — quem precisa de texto corrido passa um teto maior.
+     */
     public function __construct(
         ?string $apiKey = null,
         ?string $baseUrl = null,
         ?string $model = null,
         int $timeout = 20,
-        private string $providerName = 'openai-compatible'
+        private string $providerName = 'openai-compatible',
+        private int $summaryTokens = 600
     )
     {
         $this->apiKey = $apiKey ?? (string)getenv('AIOPS_LLM_API_KEY');
@@ -91,7 +98,7 @@ final class OpenAiCompatibleAdapter implements LlmAdapter
             return null;
         }
 
-        return $this->chat($instruction, $text, 600);
+        return $this->chat($instruction, $text, $this->summaryTokens);
     }
 
     private function chat(string $system, string $userContent, int $maxTokens): ?string

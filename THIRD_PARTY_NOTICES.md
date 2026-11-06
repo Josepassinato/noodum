@@ -34,9 +34,9 @@ upstream repositories and pins a specific tag.
 
 | Module | Upstream | Pinned | Declared licence |
 |---|---|---|---|
-| `reportcontent` | https://github.com/humhub/reportcontent | v1.3.0 | AGPL-3.0-or-later (`module.json`) |
-| `legal` | https://github.com/humhub/legal | v1.7.0 | not declared in the repository snapshot — see upstream |
-| `rest` | https://github.com/humhub/rest | v0.11.5 | not declared in the repository snapshot — see upstream |
+| `reportcontent` | https://github.com/humhub/reportcontent | v1.2.3 | AGPL-3.0-or-later (`module.json`). v1.3.x requires HumHub 1.19. |
+| `legal` | https://github.com/humhub/legal | v1.6.2 | not declared in the repository snapshot — see upstream. v1.6.2 is the 1.18 line (`maxVersion` 1.18). v1.7.0 requires HumHub 1.19. |
+| `rest` | https://github.com/humhub/rest | v0.11.5 | not declared in the repository snapshot — see upstream. `maxVersion` is 1.18. |
 
 > **Honest note on `legal` and `rest`:** at the time of this audit neither
 > repository carried a `LICENSE` file or a `license` field in `composer.json`.

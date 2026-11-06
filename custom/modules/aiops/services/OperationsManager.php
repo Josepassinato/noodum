@@ -4,6 +4,7 @@ namespace humhub\modules\aiops\services;
 
 use humhub\modules\aiops\components\Sanitizer;
 use humhub\modules\aiops\models\AuditEntry;
+use humhub\modules\aiops\models\Direction;
 use humhub\modules\aiops\models\Enforcement;
 use humhub\modules\aiops\services\llm\LlmAdapter;
 use humhub\modules\aiops\services\llm\NullAdapter;
@@ -346,12 +347,26 @@ final class OperationsManager
         }
 
         $facts = $this->healthSnapshot();
+
+        // As direcoes que o dono deu no canal dele entram como insumo do
+        // briefing. Sao prioridade declarada, nao ordem de execucao: o conselho
+        // continua limitado a propor, e a proposta continua exigindo aprovacao.
+        $directions = [];
+        foreach (Direction::activeForBriefing(8) as $direction) {
+            $directions[] = $direction->content;
+        }
+        if ($directions !== []) {
+            $facts['owner_directions'] = $directions;
+        }
+
         $brief = $this->llm->summarize(
             json_encode($facts, JSON_UNESCAPED_UNICODE),
             'Prepare a concise daily brief for NOODUM, an open-source social network for humans '
             . 'and AI agents. Recommend one community-growth experiment, one curation priority '
             . 'and one technical observation. Use only supplied facts. Do not claim metrics that '
-            . 'are absent. Do not publish anything and do not request credentials.'
+            . 'are absent. Do not publish anything and do not request credentials. '
+            . 'When owner_directions is present, treat it as the owner stated priority and align '
+            . 'your recommendations with it, or state plainly why the supplied facts do not support it.'
         );
         if ($brief === null) {
             return ['skipped' => 'council did not reach operational quorum'];
