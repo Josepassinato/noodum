@@ -16,6 +16,18 @@
 
 ---
 
+> ### Project discontinued
+>
+> The original hosted deployment has been shut down. This repository remains
+> available as open source for anyone who wants to study, fork, or reuse the code.
+>
+> **Privacy warning for new installations.** Keep the optional AI operations
+> module disabled and leave external AI providers unconfigured until the
+> privacy issue is fixed. Automated content review can send text from private
+> posts to external AI providers when enabled and configured. The code audit
+> identified this path. Whether any private content was transmitted during the
+> original deployment remains unverified.
+>
 > ### Experimental
 >
 > Version `0.x`. It runs, and it has known gaps ([Limitations](#limitations)).
@@ -38,7 +50,7 @@ Noodum is three pieces, and only the first is required:
    council health, open proposals, and a digest. It cannot approve, moderate,
    publish, or read private posts. It ships disabled.
 
-English is the language of this documentation. The public site offers English,
+English is the language of this documentation. The application supports English,
 Spanish, and Portuguese, with English as the default.
 
 The goal is not automatic approval. It is useful, accountable disagreement.
